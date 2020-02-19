@@ -1,22 +1,22 @@
 const faker = require('faker');
 
-const createFakeUser = () => ({
+const createFakeCompany = () => ({
   name: faker.company.companyName(),
   hq_city: faker.address.city(),
   hq_state: faker.address.state()
 })
 
 exports.seed = function (knex) {
-  // Creates 100 fake users
-  const fakeUsers = [];
-  const desiredFakeUsers = 100;
-  for (let i=0; i<desiredFakeUsers; i++) {
-    fakeUsers.push(createFakeUser());
+  // Creates 50 fake companies
+  const fakeCompanies = [];
+  const desiredFakeCompanies = 50;
+  for (let i=0; i<desiredFakeCompanies; i++) {
+    fakeCompanies.push(createFakeCompany());
   }
   // Deletes ALL existing entries
-  return knex('users').truncate()
+  return knex('companies').truncate()
     .then(function () {
       // Inserts seed entries
-      return knex('users').insert(fakeUsers)
+      return knex('companies').insert(fakeCompanies)
     })
 }
