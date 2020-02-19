@@ -10,7 +10,7 @@ exports.seed = function (knex) {
   // Creates 50 fake companies
   const fakeCompanies = [];
   const desiredFakeCompanies = 50;
-  for (let i=0; i<desiredFakeCompanies; i++) {
+  for (let i = 0; i < desiredFakeCompanies; i++) {
     fakeCompanies.push(createFakeCompany());
   }
   // Deletes ALL existing entries

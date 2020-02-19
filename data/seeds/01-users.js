@@ -10,7 +10,7 @@ exports.seed = function (knex) {
   // Creates 100 fake users
   const fakeUsers = [];
   const desiredFakeUsers = 100;
-  for (let i=0; i<desiredFakeUsers; i++) {
+  for (let i = 0; i < desiredFakeUsers; i++) {
     fakeUsers.push(createFakeUser());
   }
   // Deletes ALL existing entries
