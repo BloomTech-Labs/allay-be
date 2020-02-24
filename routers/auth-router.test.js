@@ -13,6 +13,9 @@ describe('server.js', () => {
   it('runs the tests', () => {
     expect(true).toBe(true);
   })
+  it('should run the testing environment', () => {
+    expect(process.env.DB_ENV).toBe('testing');
+  })
 
   /*************************** REGISTER *******************************/
 
