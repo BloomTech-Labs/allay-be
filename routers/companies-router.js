@@ -31,10 +31,10 @@ router.get('/filter', (req, res) => {
 });
 
 //*************** GET COMPANY BY ID *****************//
-router.get('/:orgId', (req, res) => {
+router.get('/:id', (req, res) => {
   const { id } = req.params;
 
-  Co.findCompanyBy(id)
+  Co.findCompanyById(id)
     .then(company => {
       res.json(company);
     })
