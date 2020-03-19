@@ -20,16 +20,20 @@ To get the server running locally:
 - Okta for user authentication
 
 ## Endpoints
+
 ---
 
 ### Auth Routes
+
 ---
+
 | Method | Endpoint         | Access Control | Description                      |
 | ------ | ---------------- | -------------- | -------------------------------- |
 | POST   | `/auth/register` | all users      | Register a new user account.     |
 | POST   | `/auth/login`    | all users      | Login with a registered account. |
 
 ### New Users Routes
+
 ---
 
 | Method | Endpoint                                  | Access Control | Description                                          |
@@ -50,6 +54,7 @@ To get the server running locally:
 | DELETE | `/users/:userId/interview-reviews/:revId` | all users      | Delete a review about an interview by id.            |
 
 ### Company Routes
+
 ---
 
 | Method | Endpoint         | Access Control | Description                                   |
@@ -59,6 +64,7 @@ To get the server running locally:
 | POST   | `/companies`     | all users      | Creates a new company.                        |
 
 ### Company Reviews Routes
+
 ---
 
 | Method | Endpoint               | Access Control | Description                          |
@@ -67,6 +73,7 @@ To get the server running locally:
 | GET    | `/company-reviews/:id` | all users      | Returns a single company review.     |
 
 ### Interview Reviews Routes
+
 ---
 
 | Method | Endpoint                 | Access Control | Description                            |
@@ -107,7 +114,7 @@ To get the server running locally:
 }
 ```
 
-*** MAKE SURE THERE ARE NO TYPOS ***
+**_ MAKE SURE THERE ARE NO TYPOS _**
 
 ##### TRACKS TABLE
 
@@ -138,6 +145,8 @@ To get the server running locally:
 | 3   | Offer Declined |
 
 ## COMPANY REVIEW
+
+---
 
 ### EXPECTS
 
@@ -179,10 +188,44 @@ To get the server running locally:
 
 ---
 
+### EXPECTS
+
 ```
 {
-    Coming soon to you live! in action! seriously be patient.
+
+}
+```
+
+### RETURNS
+
+```
+{
+    {
+        "interview_review_id": 1,
+        "job_title": "Full Stack ",
+        "interview_rounds": 3,
+        "overall_rating": 5,
+        "difficulty_rating": 5,
+        "salary": 100555,
+        "username": "aaron123",
+        "company_name": "Google",
+        "offer_status": "No Offer",
+        "city": "Los Angeles",
+        "abbreviation": "CA",
+        "phone_interview": true,
+        "resume_review": true,
+        "take_home_assignments": false,
+        "online_coding_assignments": false,
+        "portfolio_review": false,
+        "screen_share": false,
+        "open_source_contribution": false,
+        "side_projects": false,
+        "interview_comments": "asfd asdf asdf asdf asfd safd asdf asdf asdf as dfsa fa sf saf asfd l;kj s;kfhasklfjhaslkfh salfhaslkjfhslkf halskfhslkfhksahf  shfklh lkjs lskh lkh lkh  h  kljh lkjh l jkhlk jh",
+        "user_id": 1,
+        "created_at": "2020-03-19T13:26:16.860Z",
+        "updated_at": "2020-03-19T13:26:16.860Z"
     }
+}
 ```
 
 ## COMPANIES
