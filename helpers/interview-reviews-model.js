@@ -30,9 +30,9 @@ function findInterviewReviews() {
       'ir.updated_at'
     )
     .join('users as u', 'ir.user_id', 'u.id')
-    .join('companies as c', 'ir.company_id', 'c.id')
-    .join('offer_status as os', 'ir.offer_status_id', 'os.id')
-    .join('states as s', 'ir.state_id', 's.id');
+    .join('companies as c', 'ir.company_name', 'c.company_name')
+    .join('offer_status as os', 'ir.offer_status', 'os.offer_status')
+    .join('states as s', 'ir.state_abbreviation', 's.abbreviation');
 }
 
 // FIND INTERVIEW REVIEWS BY A SPECIFIC FILTER

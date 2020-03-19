@@ -20,15 +20,17 @@ To get the server running locally:
 - Okta for user authentication
 
 ## Endpoints
+---
 
-#### Auth Routes
-
+### Auth Routes
+---
 | Method | Endpoint         | Access Control | Description                      |
 | ------ | ---------------- | -------------- | -------------------------------- |
 | POST   | `/auth/register` | all users      | Register a new user account.     |
 | POST   | `/auth/login`    | all users      | Login with a registered account. |
 
-#### New Users Routes
+### New Users Routes
+---
 
 | Method | Endpoint                                  | Access Control | Description                                          |
 | ------ | ----------------------------------------- | -------------- | ---------------------------------------------------- |
@@ -47,7 +49,8 @@ To get the server running locally:
 | PUT    | `/users/:userId/interview-reviews/:revId` | all users      | Update a review about an interview by id.            |
 | DELETE | `/users/:userId/interview-reviews/:revId` | all users      | Delete a review about an interview by id.            |
 
-#### Company Routes
+### Company Routes
+---
 
 | Method | Endpoint         | Access Control | Description                                   |
 | ------ | ---------------- | -------------- | --------------------------------------------- |
@@ -55,14 +58,16 @@ To get the server running locally:
 | GET    | `/companies/:id` | all users      | Returns the information for a single company. |
 | POST   | `/companies`     | all users      | Creates a new company.                        |
 
-#### Company Reviews Routes
+### Company Reviews Routes
+---
 
 | Method | Endpoint               | Access Control | Description                          |
 | ------ | ---------------------- | -------------- | ------------------------------------ |
 | GET    | `/company-reviews`     | all users      | Returns list of all company reviews. |
 | GET    | `/company-reviews/:id` | all users      | Returns a single company review.     |
 
-#### Interview Reviews Routes
+### Interview Reviews Routes
+---
 
 | Method | Endpoint                 | Access Control | Description                            |
 | ------ | ------------------------ | -------------- | -------------------------------------- |
@@ -102,7 +107,7 @@ To get the server running locally:
 }
 ```
 
-### MAKE SURE THERE ARE NO TYPOS
+*** MAKE SURE THERE ARE NO TYPOS ***
 
 ##### TRACKS TABLE
 

@@ -85,7 +85,8 @@
 
 ### interview-reviews-model
 
-- all new functions are performing crud
+- check routers in interview-router before checking users router
+- refactor interview review model to display company_name instead of id
 - add comments
 - implement middleware
 - trello update
