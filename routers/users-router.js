@@ -263,7 +263,6 @@ router.get(
 //***************** ADD NEW INTERVIEW REVIEW *******************// ===== make sure to update the if else statement====
 router.post(
   '/:userId/add-interview-review',
-  //  checkForReviewData,
   checkForInterviewReviewData,
   validateUserId,
   (req, res) => {

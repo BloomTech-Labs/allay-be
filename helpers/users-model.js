@@ -36,15 +36,15 @@ function findUserById(userId) {
           company_reviews: userReviews
         };
       });
+    })
+    .then(user => {
+      return findUserInterviewReviews(user.id).then(userReviews => {
+        return {
+          ...user,
+          interview_reviews: userReviews
+        };
+      });
     });
-  // .then(user => {
-  //   return findUserInterviewReviews(user.id).then(userReviews => {
-  //     return {
-  //       ...user,
-  //       interview_reviews: userReviews
-  //     };
-  //   });
-  // });
 }
 
 // FIND ONLY THE COMPANY REVIEWS ASSOCIATED WITH A USER
@@ -115,14 +115,24 @@ function findUserInterviewReviews(userId) {
       'os.offer_status',
       'ir.city',
       's.abbreviation',
+      'ir.phone_interview',
+      'ir.resume_review',
+      'ir.take_home_assignments',
+      'ir.online_coding_assignments',
+      'ir.portfolio_review',
+      'ir.screen_share',
+      'ir.open_source_contribution',
+      'ir.side_projects',
+      'ir.interview_comments',
+      'u.id as user_id',
       'ir.created_at',
       'ir.updated_at'
     )
     .where('ir.user_id', userId)
     .join('users as u', 'ir.user_id', 'u.id')
-    .join('companies as c', 'ir.company_id', 'c.id')
-    .join('offer_status as os', 'ir.offer_status_id', 'os.id')
-    .join('states as s', 'ir.state_id', 's.id');
+    .join('companies as c', 'ir.company_name', 'c.company_name')
+    .join('offer_status as os', 'ir.offer_status', 'os.offer_status')
+    .join('states as s', 'ir.abbreviation', 's.abbreviation');
 }
 
 // FIND A SINGLE INTERVIEW REVIEW ASSOCIATED WITH A USER
@@ -141,14 +151,24 @@ function findUserInterviewReviewById(revId) {
       'os.offer_status',
       'ir.city',
       's.abbreviation',
+      'ir.phone_interview',
+      'ir.resume_review',
+      'ir.take_home_assignments',
+      'ir.online_coding_assignments',
+      'ir.portfolio_review',
+      'ir.screen_share',
+      'ir.open_source_contribution',
+      'ir.side_projects',
+      'ir.interview_comments',
+      'u.id as user_id',
       'ir.created_at',
       'ir.updated_at'
     )
     .where('ir.id', revId)
     .join('users as u', 'ir.user_id', 'u.id')
-    .join('companies as c', 'ir.company_id', 'c.id')
-    .join('offer_status as os', 'ir.offer_status_id', 'os.id')
-    .join('states as s', 'ir.state_id', 's.id');
+    .join('companies as c', 'ir.company_name', 'c.company_name')
+    .join('offer_status as os', 'ir.offer_status', 'os.offer_status')
+    .join('states as s', 'ir.abbreviation', 's.abbreviation');
 }
 
 // ADD A USER TO THE DATABASE
