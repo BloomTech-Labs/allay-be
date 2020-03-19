@@ -16,28 +16,22 @@ const { jwtSecret } = require('../config/secret.js');
 
 /*************************** BEGIN REGISTER *******************************/
 
-router.post(
-  '/register',
-  //  checkForRegisterData,
-  (req, res) => {
-    let user = req.body;
-    console.log(user);
-    const hash = bcrypt.hashSync(user.password, 3); //Change in production!!!
+router.post('/register', checkForRegisterData, (req, res) => {
+  let user = req.body;
+  const hash = bcrypt.hashSync(user.password, 3); //Change in production!!!
 
-    user.password = hash;
+  user.password = hash;
 
-    User.addUser(user)
-      .then(newUser => {
-        const token = signToken(newUser);
-        console.log({ newUser });
-        // res.status(201).json({ newUser, token });
-      })
-      .catch(err => {
-        console.log({ err });
-        // res.status(500).json({ error: 'There was an error signing up.' });
-      });
-  }
-);
+  User.addUser(user)
+    .then(newUser => {
+      const token = signToken(newUser);
+      console.log({ newUser });
+      res.status(201).json({ newUser, token });
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'There was an error signing up.' });
+    });
+});
 /*************************** END REGISTER *******************************/
 
 /*************************** BEGIN LOGIN *******************************/
