@@ -190,8 +190,22 @@ To get the server running locally:
 
 ### EXPECTS
 
+**_ Notice for the booleans you only send the values that are true _**
+
 ```
 {
+    "job_title": "New Web Developer",
+    "company_name":"1 Hotels",
+    "interview_rounds": 3,
+    "overall_rating": 5,
+    "difficulty_rating": 5,
+    "salary": 10555,
+    "offer_status": "No Offer",
+    "city": "Los Angeles",
+    "abbreviation": "CA",
+    "phone_interview": true,
+    "resume_review": true,
+    "interview_comments": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen"
 
 }
 ```

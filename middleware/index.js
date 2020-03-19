@@ -195,14 +195,14 @@ function checkForInterviewReviewData(req, res, next) {
     !req.body.overall_rating ||
     !req.body.salary ||
     !req.body.city ||
-    !req.body.state_id ||
+    !req.body.abbreviation ||
     !req.body.interview_rounds ||
-    !req.body.offer_status_id ||
-    !req.body.company_id
+    !req.body.offer_status ||
+    !req.body.company_name
   ) {
     res.status(400).json({
       errorMessage:
-        'job title, interview location, salary, overall rating, interview rounds, work status id, and company id are required'
+        'job title, salary, overall rating, interview rounds, offer_status, and company_name are required'
     });
   } else {
     next();
