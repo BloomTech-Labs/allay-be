@@ -22,7 +22,7 @@ const companiesRouter = require('../routers/companies-router.js');
 //endpoints
 server.get('/', (req, res) => {
   res.status(200).json({
-    welcome: `to the danger zone!`,
+    welcome: `to the happy zone!`,
     environment: process.env.NODE_ENV
   });
 });
