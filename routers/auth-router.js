@@ -17,15 +17,14 @@ const { jwtSecret } = require('../config/secret.js');
 /*************************** BEGIN REGISTER *******************************/
 
 router.post('/register', checkForRegisterData, (req, res) => {
-  let user = req.body;
-  const hash = bcrypt.hashSync(user.password, 3); //Change in production!!!
+  let {username, password, track_id, email} = req.body;
+  password = bcrypt.hashSync(password, 3); //Change in production!!!
 
-  user.password = hash;
-  User.addUser(user)
+  User.addUser({ username, password, track_id, email })
     .then(newUser => {
       const token = signToken(newUser);
-      const { username, id } = newUser;
-      res.status(201).json({ username, token, id });
+      const { username: name, id, admin, blocked } = newUser;
+      res.status(201).json({ username: name, token, id, admin, blocked });
     })
     .catch(err => {
       res.status(500).json({ error: 'There was an error signing up.' });
@@ -44,9 +43,9 @@ router.post('/login', checkForLoginData, (req, res) => {
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = signToken(user);
-        const { id, username } = user;
+        const { id, username: name, admin, blocked } = user;
 
-        res.status(200).json({ username, token, id });
+        res.status(200).json({ username: name, token, id, admin, blocked });
       } else {
         res.status(401).json({ message: 'Invalid Credentials' });
       }
