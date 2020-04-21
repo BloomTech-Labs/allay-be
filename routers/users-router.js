@@ -6,7 +6,8 @@ const Revs = require('../helpers/reviews-model.js');
 const {
   validateUserId,
   checkForReviewData,
-  validateReviewId
+  validateReviewId,
+  checkForAdmin
 } = require('../middleware/index.js');
 
 /**************************************************************************/
@@ -16,7 +17,7 @@ const {
 /**************************************************************************/
 
 //*************** GET ALL USERS *****************// - Remove for production or create new auth for admin only access to this endpoint
-router.get('/all', (req, res) => {
+router.get('/all',checkForAdmin, (req, res) => {
   User.findUsers()
     .then(user => {
       res.json(user);

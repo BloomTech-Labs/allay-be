@@ -64,7 +64,8 @@ router.post('/login', checkForLoginData, (req, res) => {
 function signToken(user) {
   const payload = {
     id: user.id,
-    email: user.username
+    email: user.username,
+    admin:user.admin
   };
 
   const options = {
