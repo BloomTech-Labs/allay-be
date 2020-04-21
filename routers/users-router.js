@@ -82,7 +82,7 @@ router.put('/:userId/bind', validateUserId, (req, res) => {
 			User.updateUser(userId, { blocked: !userInfo.blocked })
 				.then((updatedInfo) => {
 					if (updatedInfo) {
-						res.status(202).json({ updatedInfo: { updatedInfo } });
+						res.status(202).json({ updatedInfo });
 					} else {
 						res.status(404).json({ message: 'Error locating user info' });
 					}
