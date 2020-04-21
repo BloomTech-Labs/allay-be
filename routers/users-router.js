@@ -194,7 +194,6 @@ router.delete(
   '/:userId/reviews/:revId',
   validateUserId,
   validateReviewId,
-  checkForAdmin,
   (req, res) => {
     const { revId } = req.params;
     Revs.deleteReview(revId)
