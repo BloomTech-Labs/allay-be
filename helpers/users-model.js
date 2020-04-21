@@ -25,7 +25,14 @@ function findUsersBy(filter) {
 function findUserById(userId) {
 	return db('users as u')
 		.where('id', userId)
-		.select('u.id', 'u.username', 'u.email', 'u.track_id', 'u.blocked')
+		.select(
+			'u.id',
+			'u.username',
+			'u.email',
+			'u.track_id',
+			'u.admin',
+			'u.blocked'
+		)
 		.first()
 		.then((user) => {
 			return findUserReviews(user.id).then((userReviews) => {
