@@ -75,7 +75,7 @@ router.put('/:userId', validateUserId, (req, res) => {
 });
 
 //*************** UPDATE USER BIND STATUS ******************//
-router.put('/:userId/bind', validateUserId, (req, res) => {
+router.put('/:userId/bind', validateUserId, checkForAdmin, (req, res) => {
 	const { userId } = req.params;
 
 	User.findUserById(userId).then((userInfo) => {
