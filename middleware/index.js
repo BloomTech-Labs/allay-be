@@ -12,7 +12,8 @@ module.exports = {
   checkForCompanyData,
   validateCompanyId,
   checkForReviewData,
-  validateReviewId
+  validateReviewId,
+  checkForAdmin
 };
 
 // Auth Router
@@ -171,5 +172,13 @@ function checkForReviewData(req, res, next) {
     });
   } else {
     next();
+  }
+}
+//Admin Middleware
+function checkForAdmin(req, res, next) {
+  if(req.user.admin){
+  next()
+} else {
+  res.status(403).json({ errorMessage: 'not authorized to access'})
   }
 }
