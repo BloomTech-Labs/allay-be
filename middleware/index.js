@@ -12,7 +12,8 @@ module.exports = {
   checkForCompanyData,
   validateCompanyId,
   checkForReviewData,
-  validateReviewId
+  validateReviewId,
+  checkForAdmin
 };
 
 // Auth Router
@@ -27,7 +28,7 @@ function restricted(req, res, next) {
           .status(401)
           .json({ errorMessage: 'The provided token is invalid / expired' });
       } else {
-        req.user = { id: decodedToken.id, email: decodedToken.email };
+        req.user = { id: decodedToken.id, email: decodedToken.email, admin: decodedToken.admin };
         next();
       }
     });
@@ -171,5 +172,13 @@ function checkForReviewData(req, res, next) {
     });
   } else {
     next();
+  }
+}
+//Admin Middleware
+function checkForAdmin(req, res, next) {
+  if(req.user.admin){
+  next()
+} else {
+  res.status(403).json({ errorMessage: 'not authorized to access'})
   }
 }

@@ -65,6 +65,7 @@ function signToken(user) {
 	const payload = {
 		id: user.id,
 		email: user.username,
+		admin: user.admin,
 	};
 
 	const options = {

@@ -3,7 +3,8 @@ const router = require('express').Router();
 const Co = require('../helpers/companies-model.js');
 const {
   checkForCompanyData,
-  validateCompanyId
+  validateCompanyId,
+  checkForAdmin
 } = require('../middleware/index.js');
 
 /**************************************************************************/
@@ -93,7 +94,7 @@ router.put('/', checkForCompanyData, (req, res) => {
 });
 
 //****************** DELETE COMPANY ********************//
-router.delete('/:id', validateCompanyId, async (req, res) => {
+router.delete('/:id', validateCompanyId,checkForAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
