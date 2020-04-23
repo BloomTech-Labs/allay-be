@@ -17,7 +17,7 @@ describe('server', () => {
   // confirm test env
   describe('test env', () => {
     it('should run the testing env', () => {
-      expect(process.env.NODE_ENV).toBe('testing');
+      expect(process.env.NODE_ENV).toBe('test');
     });
   });
 });
