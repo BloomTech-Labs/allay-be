@@ -94,7 +94,7 @@ router.put('/', checkForCompanyData, (req, res) => {
 });
 
 //****************** DELETE COMPANY ********************//
-router.delete('/:id', validateCompanyId,checkForAdmin, async (req, res) => {
+router.delete('/:id', checkForAdmin, validateCompanyId, async (req, res) => {
   const { id } = req.params;
 
   try {
