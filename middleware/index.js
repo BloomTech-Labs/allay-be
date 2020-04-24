@@ -81,6 +81,7 @@ function validateUserId(req, res, next) {
   Users.findUsersBy({ id })
     .then(user => {
       if (user.length > 0) {
+        res.locals.user = user[0];
         next();
       } else {
         res.status(404).json({
@@ -139,6 +140,7 @@ function validateReviewId(req, res, next) {
   Revs.findReviewsById(revId)
     .then(review => {
       if (review) {
+        res.locals.review = review;
         next();
       } else {
         res.status(404).json({
@@ -171,9 +173,11 @@ function checkForReviewData(req, res, next) {
         'job title, job location, salary, and company name are required'
     });
   } else {
+    res.locals.newReview = req.body;
     next();
   }
 }
+
 //Admin Middleware
 function checkForAdmin(req, res, next) {
   if(req.user.admin){
