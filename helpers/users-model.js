@@ -34,7 +34,9 @@ function findUserById(userId) {
 			'u.blocked'
 		)
 		.first()
-		.then((user) => {
+		.then(user => {
+			if (!user) return null;
+
 			return findUserReviews(user.id).then((userReviews) => {
 				return {
 					...user,

@@ -34,32 +34,22 @@ router.get('/filter', (req, res) => {
 });
 
 //*************** GET COMPANY BY ID *****************//
-router.get('/:id', validateCompanyId, (req, res) => {
-  const { id } = req.params;
-
-  Co.findCompanyById(id)
-    .then(company => {
-      res.json(company);
-    })
-    .catch(err => res.send(err));
+router.get('/:companyId', validateCompanyId, (req, res) => {
+  res.status(200).json(res.locals.company);
 });
 
 //****** GET REVIEWS ASSOCIATED WITH COMPANY NAME ******//
 
-router.get('/:id/reviews', validateCompanyId, (req, res) => {
-  const { id } = req.params;
+router.get('/:companyId/reviews', validateCompanyId, (req, res) => {
+  const {reviews} = res.locals.company;
 
-  Co.findCompanyReviews(id)
-    .then(reviews => {
-      if (reviews.length > 0) {
-        res.status(200).json(reviews);
-      } else {
-        res
-          .status(404)
-          .json({ error: 'Can not find any reviews for this company' });
-      }
-    })
-    .catch(err => res.send(err));
+  if (reviews.length > 0) {
+    res.status(200).json(reviews);
+  } else {
+    res
+      .status(404)
+      .json({ error: 'Can not find any reviews for this company' });
+  }
 });
 
 //***************** ADD NEW COMPANY *******************//
@@ -76,17 +66,12 @@ router.post('/', checkForCompanyData, (req, res) => {
 });
 
 //************* UPDATE COMPANY INFO ****************//
-router.put('/', checkForCompanyData, (req, res) => {
+router.put('/:companyId', checkForCompanyData, validateCompanyId, (req, res) => {
   const changes = req.body;
-  const id = req.company.id;
 
-  Co.updateCompany(id, changes)
+  Co.updateCompany(res.locals.company.id, changes)
     .then(info => {
-      if (info) {
-        res.status(200).json({ info: changes });
-      } else {
-        res.status(404).json({ message: 'Error locating company info' });
-      }
+      res.status(200).json({ info: changes });
     })
     .catch(err => {
       res.status(500).json({ message: 'Error updating company info' });
@@ -94,17 +79,10 @@ router.put('/', checkForCompanyData, (req, res) => {
 });
 
 //****************** DELETE COMPANY ********************//
-router.delete('/:id', checkForAdmin, validateCompanyId, async (req, res) => {
-  const { id } = req.params;
-
+router.delete('/:companyId', checkForAdmin, validateCompanyId, async (req, res) => {
   try {
-    const user = await Co.findCompanyById(id);
-    if (user) {
-      const deleted = await Co.deleteCompany(id);
-      res.status(200).json(user);
-    } else {
-      res.status(404).json({ message: 'Error locating company.' });
-    }
+    const deleted = await Co.deleteCompany(res.locals.company.id);
+    res.status(200).json(deleted);
   } catch {
     res
       .status(500)

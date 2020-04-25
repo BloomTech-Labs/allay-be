@@ -36,17 +36,7 @@ router.get('/filter', (req, res) => {
 //************* GET A SINGLE REVIEW BY ID ***************//
 
 router.get('/:revId', validateReviewId, (req, res) => {
-  const { revId } = req.params;
-
-  Revs.findReviewsById(revId)
-    .then(review => {
-      res.json(review);
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: 'Error getting comany review by company review ID.'
-      });
-    });
+  res.status(200).json(res.locals.review);
 });
 
 

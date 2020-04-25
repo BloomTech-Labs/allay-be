@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const bcrypt = require('bcryptjs');
 
 const User = require('../helpers/users-model.js');
 const Revs = require('../helpers/reviews-model.js');
@@ -32,83 +33,57 @@ router.get('/all', checkForAdmin, (req, res) => {
 
 //*************** GET USER BY ID *****************//
 router.get('/:userId', validateUserId, (req, res) => {
-	const { userId } = req.params;
-	User.findUserById(userId)
-		.then((user) => {
-			res.json(user);
-		})
-		.catch((err) => {
-			res.status(500).json({ error: 'There was an error getting user' });
-		});
+	res.json(res.locals.user);
 });
 
 //*************** UPDATE USER INFO ******************//
 router.put('/:userId', validateUserId, (req, res) => {
 	const { email, password, username, track_id } = req.body;
-	const { userId } = req.params;
-	id = userId;
-	User.findUsersBy({ id }).then((userInfo) => {
-		const user = userInfo;
-		if (
-			email === user[0].email &&
-			username === user[0].username &&
-			password === user[0].password &&
-			track_id === user[0].track_id
-		) {
-			return res.status(200).json({ message: 'No changes to update' });
-		} else {
-			User.updateUser(id, { email, password, username, track_id })
-				.then((updatedInfo) => {
-					if (updatedInfo) {
-						res
-							.status(202)
-							.json({ updatedInfo: { email, password, username, track_id } });
-					} else {
-						res.status(404).json({ message: 'Error locating user info' });
-					}
-				})
-				.catch((err) => {
-					res.status(500).json({ message: 'Error updating user info' });
-				});
-		}
-	});
+
+	const user = res.locals.user;
+
+	if (
+		email === user.email &&
+		username === user.username &&
+		password === user.password &&
+		track_id === user.track_id
+	) {
+		return res.status(200).json({ message: 'No changes to update' });
+	} else {
+		User.updateUser(user.id, { email, password, username, track_id })
+			.then((updatedInfo) => {
+				res
+					.status(202)
+					.json({ updatedInfo: { email, password, username, track_id } });
+			})
+			.catch((err) => {
+				res.status(500).json({ message: 'Error updating user info' });
+			});
+	}
 });
 
 //*************** UPDATE USER BIND STATUS ******************//
 router.put('/:userId/bind', checkForAdmin, validateUserId, (req, res) => {
-	const { userId } = req.params;
+	const {id, blocked} = res.locals.user;
 
-	User.findUserById(userId).then((userInfo) => {
-		if (userInfo) {
-			User.updateUser(userId, { blocked: !userInfo.blocked })
-				.then((updatedInfo) => {
-					if (updatedInfo) {
-						res.status(202).json({ updatedInfo });
-					} else {
-						res.status(404).json({ message: 'Error locating user info' });
-					}
-				})
-				.catch((err) => {
-					res.status(500).json({ message: 'Error updating user info' });
-				});
-		} else {
-			res.status(404).json({ message: 'Error locating user info' });
-		}
-	});
+	User.updateUser(id, { blocked: !blocked })
+		.then((updatedInfo) => {
+			if (updatedInfo) {
+				res.status(202).json({ updatedInfo });
+			} else {
+				res.status(404).json({ message: 'Error locating user info' });
+			}
+		})
+		.catch((err) => {
+			res.status(500).json({ message: 'Error updating user info' });
+		});
 });
 
 //****************** DELETE ACCOUNT ********************//
-router.delete('/:userId', async (req, res) => {
-	const { userId } = req.params;
-
+router.delete('/:userId', validateUserId, async (req, res) => {
 	try {
-		const user = await User.findUserById(userId);
-		if (user) {
-			const deleted = await User.deleteUser(userId);
-			res.status(200).json({ message: 'User account deleted' });
-		} else {
-			res.status(404).json({ message: 'Error locating user.' });
-		}
+		const deleted = await User.deleteUser(res.locals.user.id);
+		res.status(200).json({ message: 'User account deleted' });
 	} catch {
 		res.status(500).json({
 			message: 'There was an error deleting this account.',
@@ -125,37 +100,14 @@ router.delete('/:userId', async (req, res) => {
 //***************** GET USERS REVIEWS *******************//
 
 router.get('/:userId/reviews', validateUserId, (req, res) => {
-	const { userId } = req.params;
-	User.findUserReviews(userId)
-		.then((user) => {
-			res.status(200).json(user);
-		})
-		.catch((err) => {
-			res.status(500).json({
-				error: 'Server was not able to retrieve user reviews',
-			});
-		});
+	res.status(200).json(res.locals.user.reviews);
 });
 
 //************* GET A SINGLE REVIEW BY USER ID ***************//
 
-router.get(
-	'/:userId/reviews/:revId',
-	validateUserId,
-	validateReviewId,
-	(req, res) => {
-		const { revId } = req.params;
-		User.findUserReviewsById(revId)
-			.then((review) => {
-				res.status(200).json(review);
-			})
-			.catch((err) => {
-				res
-					.status(500)
-					.json({ error: 'Could not retrieve single user review.' });
-			});
-	}
-);
+router.get('/:userId/reviews/:revId', validateUserId, validateReviewId, (req, res) => {
+	res.status(200).json(res.locals.review);
+});
 
 //***************** ADD NEW REVIEW *******************// ===== make sure to update the if else statement====
 router.post(
@@ -163,12 +115,11 @@ router.post(
 	checkForReviewData,
 	validateUserId,
 	(req, res) => {
-		const { userId } = req.params;
+		const user = res.locals.user;
 
-		let review = req.body;
-		review = { ...review, user_id: userId };
+		const review = {...res.locals.newReview, user_id: user.id};
 
-		if (Number(req.user.id) === Number(userId)) {
+		if (res.locals.authorizedUser.id === user.id) {
 			Revs.addReview(review)
 				.then((newReview) => {
 					res.status(201).json(newReview);
@@ -190,26 +141,16 @@ router.put(
 	'/:userId/reviews/:revId',
 	validateUserId,
 	validateReviewId,
+	checkForReviewData,
 	(req, res) => {
-		const { revId } = req.params;
-
-		const changes = req.body;
-
-		Revs.updateReview(revId, changes)
-			.then((updatedReview) => {
-				if (updatedReview) {
-					res.status(200).json({ updatedReview: changes });
-				} else {
-					res.status(404).json({
-						error: 'could not find a valid review',
-					});
-				}
-			})
-			.catch((err) => {
-				res.status(500).json({ error: 'can not edit review' });
-			});
-	}
-);
+	Revs.updateReview(res.locals.review.id, res.locals.newReview)
+		.then((updatedReview) => {
+			res.status(200).json({updatedReview});
+		})
+		.catch((err) => {
+			res.status(500).json({ error: 'can not edit review' });
+		});
+});
 
 //************* DELETE A REVIEW BY USER ID ***************//
 
@@ -218,18 +159,16 @@ router.delete(
 	validateUserId,
 	validateReviewId,
 	(req, res) => {
-		const { revId } = req.params;
-		Revs.deleteReview(revId)
-			.then((deleted) => {
-				res.status(200).json(deleted);
-			})
-			.catch((err) => {
-				res.status(500).json({
-					error: ' was not able to delete interview review',
-				});
+	Revs.deleteReview(res.locals.review.id)
+		.then((deleted) => {
+			res.status(200).json(deleted);
+		})
+		.catch((err) => {
+			res.status(500).json({
+				error: ' was not able to delete interview review',
 			});
-	}
-);
+		});
+});
 
 /**************************************************************************/
 

@@ -17,7 +17,7 @@ const { jwtSecret } = require('../config/secret.js');
 /*************************** BEGIN REGISTER *******************************/
 
 router.post('/register', checkForRegisterData, (req, res) => {
-	let { username, password, track_id, email } = req.body;
+	let { username, password, track_id, email } = res.locals.newUser;
 	password = bcrypt.hashSync(password, 3); //Change in production!!!
 
 	User.addUser({ username, password, track_id, email })
@@ -35,7 +35,7 @@ router.post('/register', checkForRegisterData, (req, res) => {
 /*************************** BEGIN LOGIN *******************************/
 
 router.post('/login', checkForLoginData, (req, res) => {
-	let { username, password } = req.body;
+	let { username, password } = res.locals.newUser;
 	// console.log(req.body, 'req.body ln 36');
 
 	User.findUsersBy({ username })
