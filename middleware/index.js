@@ -18,25 +18,15 @@ module.exports = {
 
 // Auth Router
 
-function restricted(req, res, next) {
-  const token = req.headers.authorization;
-  if (token) {
-    jwt.verify(token, jwtSecret, (err, decodedToken) => {
-      if (err) {
-        //i.e: the token is not valid
-        res
-          .status(401)
-          .json({ errorMessage: 'The provided token is invalid / expired' });
-      } else {
-        req.user = { id: decodedToken.id, email: decodedToken.email, admin: decodedToken.admin };
-        next();
-      }
-    });
-  } else {
-    res
-      .status(401)
-      .json({ errorMessage: 'Must be an authorized user / token is missing' });
-  }
+function restricted({headers: {authorization}}, res, next) {
+  if (!authorization) return res.status(401).json({errorMessage: 'Must be an authorized user / token is missing'});
+
+  jwt.verify(authorization, jwtSecret, (err, decodedToken) => {
+    if (err) return res.status(401).json({errorMessage: 'The provided token is invalid / expired'});
+
+    res.locals.authorizedUser = {id: decodedToken.id, email: decodedToken.email, admin: decodedToken.admin};
+    next();
+  });
 }
 
 function checkForRegisterData(req, res, next) {
@@ -54,6 +44,7 @@ function checkForRegisterData(req, res, next) {
       errorMessage: 'username, password, email, and track fields are required'
     });
   } else {
+    res.locals.newUser = req.body;
     next();
   }
 }
@@ -68,32 +59,22 @@ function checkForLoginData(req, res, next) {
       .status(400)
       .json({ errorMessage: 'username and password fields are required' });
   } else {
+    res.locals.newUser = req.body;
     next();
   }
 }
 
 // Users Router
 
-function validateUserId(req, res, next) {
-  let { userId } = req.params;
-  id = userId;
-
-  Users.findUsersBy({ id })
+function validateUserId({params: {userId}}, res, next) {
+  Users.findUserById(userId)
     .then(user => {
-      if (user.length > 0) {
-        next();
-      } else {
-        res.status(404).json({
-          errorMessage: 'The user with the specified ID does not exist.'
-        });
-      }
+      if (!user) return res.status(404).json({errorMessage: 'The user with the specified ID does not exist.'});
+
+      res.locals.user = user;
+      next();
     })
-    .catch(error => {
-      res.status(500).json({
-        errorMessage:
-          'Could not validate user information for the specified ID.'
-      });
-    });
+    .catch(() => res.status(500).json({errorMessage: 'Could not validate user information for the specified ID.'}));
 }
 
 // Companies Router
@@ -108,50 +89,33 @@ function checkForCompanyData(req, res, next) {
       .status(400)
       .json({ errorMessage: 'company name and state id is required' });
   } else {
+    res.locals.newCompany = req.body;
     next();
   }
 }
 
-function validateCompanyId(req, res, next) {
-  const id = req.params.id;
-  Companies.findCompaniesBy({ id })
+function validateCompanyId({params: {companyId}}, res, next) {
+  Companies.findCompanyById(companyId)
     .then(company => {
-      if (company.length > 0) {
-        next();
-      } else {
-        res.status(404).json({
-          errorMessage: 'The company with the specified ID does not exist'
-        });
-      }
+      if (!company) return res.status(404).json({errorMessage: 'The company with the specified ID does not exist'});
+
+      res.locals.company = company;
+      next();
     })
-    .catch(erorr => {
-      res.status(500).json({
-        errorMessage:
-          'Could not validate company information for the specified ID'
-      });
-    });
+    .catch(() => res.status(500).json({errorMessage: 'Could not validate company information for the specified ID'}));
 }
 
 // Reviews Router
 
-function validateReviewId(req, res, next) {
-  const { revId } = req.params;
+function validateReviewId({params: {revId}}, res, next) {
   Revs.findReviewsById(revId)
     .then(review => {
-      if (review) {
-        next();
-      } else {
-        res.status(404).json({
-          errorMessage: 'The review with the specified ID does not exist'
-        });
-      }
+      if (!review) return res.status(404).json({errorMessage: 'The review with the specified ID does not exist'});
+
+      res.locals.review = review;
+      next();
     })
-    .catch(erorr => {
-      res.status(500).json({
-        errorMessage:
-          'Could not validate review information for the specified ID'
-      });
-    });
+    .catch(() => res.status(500).json({errorMessage: 'Could not validate review information for the specified ID'}));
 }
 
 function checkForReviewData(req, res, next) {
@@ -171,14 +135,14 @@ function checkForReviewData(req, res, next) {
         'job title, job location, salary, and company name are required'
     });
   } else {
+    res.locals.newReview = req.body;
     next();
   }
 }
+
 //Admin Middleware
 function checkForAdmin(req, res, next) {
-  if(req.user.admin){
+  if (!res.locals.authorizedUser.admin) return res.status(403).json({errorMessage: 'not authorized to access'});
+
   next()
-} else {
-  res.status(403).json({ errorMessage: 'not authorized to access'})
-  }
 }

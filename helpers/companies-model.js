@@ -26,6 +26,8 @@ function findCompanyById(id) {
     .where({ id })
     .first()
     .then(company => {
+      if (!company) return null;
+
       return findCompanyReviews(company.company_name).then(companyReviews => {
         return {
           ...company,
