@@ -26,7 +26,8 @@ router.post('/register', checkForRegisterData, (req, res) => {
 			const { username: name, id, admin, blocked } = newUser;
 			res.status(201).json({ username: name, token, id, admin, blocked });
 		})
-		.catch((err) => {
+		.catch(err => {
+			console.log(err);
 			res.status(500).json({ error: 'There was an error signing up.' });
 		});
 });
@@ -50,7 +51,8 @@ router.post('/login', checkForLoginData, (req, res) => {
 				res.status(401).json({ message: 'Invalid Credentials' });
 			}
 		})
-		.catch((err) => {
+		.catch(err => {
+			console.log(err);
 			res.status(500).json({ error: 'There was an error signing in' });
 		});
 });

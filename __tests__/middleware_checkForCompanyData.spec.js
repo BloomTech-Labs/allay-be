@@ -2,6 +2,7 @@ const request = require('supertest');
 const server = require('../api/server');
 const db = require('../data/dbConfig');
 const jwt = require('jsonwebtoken');
+const {MISSING_REQUIRED_BODY_FIELD, MISSING_BODY_INFO_ERROR} = require('../config/errors.js');
 
 describe('server.js', () => {
   beforeEach(async () => {
@@ -37,9 +38,7 @@ describe('server.js', () => {
         .set({ authorization: token, Accept: 'application/json' });
       // deny company registration due to missing company name
       expect(res.status).toEqual(400);
-      expect(res.body).toMatchObject({
-        errorMessage: 'company name and state id is required'
-      });
+      expect(res.body).toMatchObject({message: MISSING_REQUIRED_BODY_FIELD});
     });
     it('should 400 error if company body is empty', async () => {
       // register a new user
@@ -62,9 +61,7 @@ describe('server.js', () => {
         .set({ authorization: token, Accept: 'application/json' });
       // deny company registration due to empty body
       expect(res.status).toEqual(400);
-      expect(res.body).toMatchObject({
-        errorMessage: 'body is empty / missing company data'
-      });
+      expect(res.body).toMatchObject({message: MISSING_BODY_INFO_ERROR});
     });
   });
 });

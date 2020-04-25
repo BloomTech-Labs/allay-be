@@ -2,6 +2,8 @@ const router = require('express').Router();
 
 const Revs = require('../helpers/reviews-model.js');
 
+const {GET_ALL_REVIEW_ERROR, GET_REVIEW_ERROR} = require('../config/errors.js');
+
 const { validateReviewId } = require('../middleware/index.js');
 
 //************* GET ALL REVIEWS ***************//
@@ -11,9 +13,8 @@ router.get('/', (req, res) => {
       res.json(reviews);
     })
     .catch(err => {
-      res.status(500).json({
-        error: 'Error getting all reviews.'
-      });
+      console.log(err);
+      res.status(500).json({message: GET_ALL_REVIEW_ERROR});
     });
 });
 //************* GET ALL REVIEWS BY FILTER ***************//
@@ -26,9 +27,8 @@ router.get('/filter', (req, res) => {
       res.json(reviews);
     })
     .catch(err => {
-      res.status(500).json({
-        error: 'Error getting a company by a filter.'
-      });
+      console.log(err);
+      res.status(500).json({message: GET_REVIEW_ERROR});
     });
 });
 

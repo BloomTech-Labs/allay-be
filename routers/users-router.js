@@ -5,6 +5,18 @@ const User = require('../helpers/users-model.js');
 const Revs = require('../helpers/reviews-model.js');
 
 const {
+	GET_ALL_USER_ERROR,
+	USER_NOT_FOUND_ERROR,
+	USER_NO_CHANGES_ERROR,
+	UPDATE_USER_ERROR,
+	DELETE_USER_ERROR,
+	WRONG_USER_ERROR,
+	ADD_REVIEW_ERROR,
+	UPDATE_REVIEW_ERROR,
+	DELETE_REVIEW_ERROR
+} = require('../config/errors.js');
+
+const {
 	validateUserId,
 	checkForReviewData,
 	validateReviewId,
@@ -23,11 +35,9 @@ router.get('/all', checkForAdmin, (req, res) => {
 		.then((user) => {
 			res.json(user);
 		})
-		.catch((err) => {
+		.catch(err => {
 			console.log(err);
-			res.status(500).json({
-				error: 'There was an error getting all users to dsiplay',
-			});
+			res.status(500).json({message: GET_ALL_USER_ERROR});
 		});
 });
 
@@ -45,10 +55,10 @@ router.put('/:userId', validateUserId, (req, res) => {
 	if (
 		email === user.email &&
 		username === user.username &&
-		password === user.password &&
+		bcrypt.compareSync(password, user.password) &&
 		track_id === user.track_id
 	) {
-		return res.status(200).json({ message: 'No changes to update' });
+		return res.status(200).json({message: USER_NO_CHANGES_ERROR});
 	} else {
 		User.updateUser(user.id, { email, password, username, track_id })
 			.then((updatedInfo) => {
@@ -56,8 +66,9 @@ router.put('/:userId', validateUserId, (req, res) => {
 					.status(202)
 					.json({ updatedInfo: { email, password, username, track_id } });
 			})
-			.catch((err) => {
-				res.status(500).json({ message: 'Error updating user info' });
+			.catch(err => {
+				console.log(err);
+				res.status(500).json({message: UPDATE_USER_ERROR});
 			});
 	}
 });
@@ -71,11 +82,12 @@ router.put('/:userId/bind', checkForAdmin, validateUserId, (req, res) => {
 			if (updatedInfo) {
 				res.status(202).json({ updatedInfo });
 			} else {
-				res.status(404).json({ message: 'Error locating user info' });
+				res.status(404).json({ message: USER_NOT_FOUND_ERROR });
 			}
 		})
-		.catch((err) => {
-			res.status(500).json({ message: 'Error updating user info' });
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({message: UPDATE_USER_ERROR});
 		});
 });
 
@@ -84,10 +96,9 @@ router.delete('/:userId', validateUserId, async (req, res) => {
 	try {
 		const deleted = await User.deleteUser(res.locals.user.id);
 		res.status(200).json({ message: 'User account deleted' });
-	} catch {
-		res.status(500).json({
-			message: 'There was an error deleting this account.',
-		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({message: DELETE_USER_ERROR});
 	}
 });
 
@@ -124,13 +135,12 @@ router.post(
 				.then((newReview) => {
 					res.status(201).json(newReview);
 				})
-				.catch((err) => {
-					res.status(500).json({
-						error: 'There was an error check id or review fields',
-					});
+				.catch(err => {
+					console.log(err);
+					res.status(500).json({message: ADD_REVIEW_ERROR});
 				});
 		} else {
-			return res.status(404).json({ error: 'Wrong user' });
+			return res.status(404).json({message: WRONG_USER_ERROR});
 		}
 	}
 );
@@ -147,8 +157,9 @@ router.put(
 		.then((updatedReview) => {
 			res.status(200).json({updatedReview});
 		})
-		.catch((err) => {
-			res.status(500).json({ error: 'can not edit review' });
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({message: UPDATE_REVIEW_ERROR});
 		});
 });
 
@@ -163,10 +174,9 @@ router.delete(
 		.then((deleted) => {
 			res.status(200).json(deleted);
 		})
-		.catch((err) => {
-			res.status(500).json({
-				error: ' was not able to delete interview review',
-			});
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({message: DELETE_REVIEW_ERROR});
 		});
 });
 

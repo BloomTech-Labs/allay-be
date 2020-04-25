@@ -1,6 +1,15 @@
 const router = require('express').Router();
 
 const Co = require('../helpers/companies-model.js');
+
+const {
+  GET_ALL_COMPANY_ERROR,
+  GET_COMPANY_ERROR,
+  ADD_COMPANY_ERROR,
+  UPDATE_COMPANY_ERROR,
+  DELETE_COMPANY_ERROR
+} = require('../config/errors.js');
+
 const {
   checkForCompanyData,
   validateCompanyId,
@@ -19,7 +28,10 @@ router.get('/', (req, res) => {
     .then(company => {
       res.json(company);
     })
-    .catch(err => res.send(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).send({message: GET_ALL_COMPANY_ERROR})
+    });
 });
 
 //*************** GET COMPANIES BY FILTER *****************//
@@ -30,7 +42,10 @@ router.get('/filter', (req, res) => {
     .then(company => {
       res.json(company);
     })
-    .catch(err => res.send(err));
+    .catch(err => {
+      console.log(err);
+      res.status(500).send({message: GET_COMPANY_ERROR})
+    });
 });
 
 //*************** GET COMPANY BY ID *****************//
@@ -41,15 +56,7 @@ router.get('/:companyId', validateCompanyId, (req, res) => {
 //****** GET REVIEWS ASSOCIATED WITH COMPANY NAME ******//
 
 router.get('/:companyId/reviews', validateCompanyId, (req, res) => {
-  const {reviews} = res.locals.company;
-
-  if (reviews.length > 0) {
-    res.status(200).json(reviews);
-  } else {
-    res
-      .status(404)
-      .json({ error: 'Can not find any reviews for this company' });
-  }
+  res.status(200).json(res.locals.company.reviews);
 });
 
 //***************** ADD NEW COMPANY *******************//
@@ -61,7 +68,8 @@ router.post('/', checkForCompanyData, (req, res) => {
       res.status(201).json(newCompany);
     })
     .catch(err => {
-      res.status(500).json({ error: 'There was an error adding a company' });
+      console.log(err);
+      res.status(500).json({message: ADD_COMPANY_ERROR});
     });
 });
 
@@ -74,7 +82,8 @@ router.put('/:companyId', checkForCompanyData, validateCompanyId, (req, res) => 
       res.status(200).json({ info: changes });
     })
     .catch(err => {
-      res.status(500).json({ message: 'Error updating company info' });
+      console.log(err);
+      res.status(500).json({message: UPDATE_COMPANY_ERROR});
     });
 });
 
@@ -83,10 +92,9 @@ router.delete('/:companyId', checkForAdmin, validateCompanyId, async (req, res) 
   try {
     const deleted = await Co.deleteCompany(res.locals.company.id);
     res.status(200).json(deleted);
-  } catch {
-    res
-      .status(500)
-      .json({ message: 'There was an error deleting company account.' });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({message: DELETE_COMPANY_ERROR});
   }
 });
 

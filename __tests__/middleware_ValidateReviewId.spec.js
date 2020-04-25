@@ -3,6 +3,8 @@ const server = require('../api/server');
 const db = require('../data/dbConfig');
 const jwt = require('jsonwebtoken');
 
+const {REVIEW_NOT_FOUND_ERROR} = require('../config/errors.js');
+
 describe('server.js', () => {
   beforeEach(async () => {
     await db.raw('truncate table reviews restart identity cascade');
@@ -35,9 +37,7 @@ describe('server.js', () => {
         .get('/api/reviews/1')
         .set({ authorization: token, Accept: 'application/json' });
       expect(res.status).toEqual(404);
-      expect(res.body).toMatchObject({
-        errorMessage: 'The review with the specified ID does not exist'
-      });
+      expect(res.body).toMatchObject({message: REVIEW_NOT_FOUND_ERROR});
     });
   });
 });

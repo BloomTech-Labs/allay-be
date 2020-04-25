@@ -2,6 +2,7 @@ const request = require('supertest');
 const server = require('../api/server');
 const db = require('../data/dbConfig');
 const jwt = require('jsonwebtoken');
+const {COMPANY_NOT_FOUND_ERROR} = require('../config/errors.js');
 
 describe('server.js', () => {
   beforeEach(async () => {
@@ -35,9 +36,7 @@ describe('server.js', () => {
         .get('/api/companies/1')
         .set({ authorization: token, Accept: 'application/json' });
       expect(res.status).toEqual(404);
-      expect(res.body).toMatchObject({
-        errorMessage: 'The company with the specified ID does not exist'
-      });
+      expect(res.body).toMatchObject({message: COMPANY_NOT_FOUND_ERROR});
     });
   });
 });
