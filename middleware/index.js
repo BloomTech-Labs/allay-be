@@ -80,7 +80,10 @@ function validateUserId({params: {userId}}, res, next) {
       res.locals.user = user;
       next();
     })
-    .catch(() => res.status(500).json({message: GET_USER_ERROR}));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({message: GET_USER_ERROR})
+    });
 }
 
 // Companies Router
@@ -104,7 +107,10 @@ function validateCompanyId({params: {companyId}}, res, next) {
       res.locals.company = company;
       next();
     })
-    .catch(() => res.status(500).json({message: GET_COMPANY_ERROR}));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({message: GET_COMPANY_ERROR})
+    });
 }
 
 // Reviews Router
@@ -117,7 +123,10 @@ function validateReviewId({params: {revId}}, res, next) {
       res.locals.review = review;
       next();
     })
-    .catch(() => res.status(500).json({message: GET_REVIEW_ERROR}));
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({message: GET_REVIEW_ERROR})
+    });
 }
 
 function checkForReviewData(req, res, next) {

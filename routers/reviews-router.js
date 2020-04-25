@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
       res.json(reviews);
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({message: GET_ALL_REVIEW_ERROR});
     });
 });
@@ -26,6 +27,7 @@ router.get('/filter', (req, res) => {
       res.json(reviews);
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({message: GET_REVIEW_ERROR});
     });
 });

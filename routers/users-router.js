@@ -35,7 +35,7 @@ router.get('/all', checkForAdmin, (req, res) => {
 		.then((user) => {
 			res.json(user);
 		})
-		.catch((err) => {
+		.catch(err => {
 			console.log(err);
 			res.status(500).json({message: GET_ALL_USER_ERROR});
 		});
@@ -66,7 +66,8 @@ router.put('/:userId', validateUserId, (req, res) => {
 					.status(202)
 					.json({ updatedInfo: { email, password, username, track_id } });
 			})
-			.catch((err) => {
+			.catch(err => {
+				console.log(err);
 				res.status(500).json({message: UPDATE_USER_ERROR});
 			});
 	}
@@ -84,7 +85,8 @@ router.put('/:userId/bind', checkForAdmin, validateUserId, (req, res) => {
 				res.status(404).json({ message: USER_NOT_FOUND_ERROR });
 			}
 		})
-		.catch((err) => {
+		.catch(err => {
+			console.log(err);
 			res.status(500).json({message: UPDATE_USER_ERROR});
 		});
 });
@@ -94,7 +96,8 @@ router.delete('/:userId', validateUserId, async (req, res) => {
 	try {
 		const deleted = await User.deleteUser(res.locals.user.id);
 		res.status(200).json({ message: 'User account deleted' });
-	} catch {
+	} catch (err) {
+		console.log(err);
 		res.status(500).json({message: DELETE_USER_ERROR});
 	}
 });
@@ -132,7 +135,8 @@ router.post(
 				.then((newReview) => {
 					res.status(201).json(newReview);
 				})
-				.catch((err) => {
+				.catch(err => {
+					console.log(err);
 					res.status(500).json({message: ADD_REVIEW_ERROR});
 				});
 		} else {
@@ -153,7 +157,8 @@ router.put(
 		.then((updatedReview) => {
 			res.status(200).json({updatedReview});
 		})
-		.catch((err) => {
+		.catch(err => {
+			console.log(err);
 			res.status(500).json({message: UPDATE_REVIEW_ERROR});
 		});
 });
@@ -170,6 +175,7 @@ router.delete(
 			res.status(200).json(deleted);
 		})
 		.catch(err => {
+			console.log(err);
 			res.status(500).json({message: DELETE_REVIEW_ERROR});
 		});
 });

@@ -28,7 +28,10 @@ router.get('/', (req, res) => {
     .then(company => {
       res.json(company);
     })
-    .catch(err => res.status(500).send({message: GET_ALL_COMPANY_ERROR}));
+    .catch(err => {
+      console.log(err);
+      res.status(500).send({message: GET_ALL_COMPANY_ERROR})
+    });
 });
 
 //*************** GET COMPANIES BY FILTER *****************//
@@ -39,7 +42,10 @@ router.get('/filter', (req, res) => {
     .then(company => {
       res.json(company);
     })
-    .catch(err => res.status(500).send({message: GET_COMPANY_ERROR}));
+    .catch(err => {
+      console.log(err);
+      res.status(500).send({message: GET_COMPANY_ERROR})
+    });
 });
 
 //*************** GET COMPANY BY ID *****************//
@@ -62,6 +68,7 @@ router.post('/', checkForCompanyData, (req, res) => {
       res.status(201).json(newCompany);
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({message: ADD_COMPANY_ERROR});
     });
 });
@@ -75,6 +82,7 @@ router.put('/:companyId', checkForCompanyData, validateCompanyId, (req, res) => 
       res.status(200).json({ info: changes });
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json({message: UPDATE_COMPANY_ERROR});
     });
 });
@@ -84,7 +92,8 @@ router.delete('/:companyId', checkForAdmin, validateCompanyId, async (req, res) 
   try {
     const deleted = await Co.deleteCompany(res.locals.company.id);
     res.status(200).json(deleted);
-  } catch {
+  } catch (err) {
+    console.log(err);
     res.status(500).json({message: DELETE_COMPANY_ERROR});
   }
 });
