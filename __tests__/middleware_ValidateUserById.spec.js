@@ -2,6 +2,7 @@ const request = require('supertest');
 const server = require('../api/server');
 const db = require('../data/dbConfig');
 const jwt = require('jsonwebtoken');
+const {USER_NOT_FOUND_ERROR} = require('../config/errors.js');
 
 describe('server.js', () => {
   beforeEach(async () => {
@@ -35,9 +36,7 @@ describe('server.js', () => {
         .get('/api/users/2')
         .set({ authorization: token, Accept: 'application/json' });
       expect(res.status).toEqual(404);
-      expect(res.body).toMatchObject({
-        errorMessage: 'The user with the specified ID does not exist.'
-      });
+      expect(res.body).toMatchObject({message: USER_NOT_FOUND_ERROR});
     });
   });
 });

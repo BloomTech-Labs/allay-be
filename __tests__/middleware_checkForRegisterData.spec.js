@@ -2,6 +2,7 @@ const request = require('supertest');
 const server = require('../api/server');
 const db = require('../data/dbConfig');
 const jwt = require('jsonwebtoken');
+const {MISSING_REQUIRED_BODY_FIELD, MISSING_BODY_INFO_ERROR} = require('../config/errors.js');
 
 describe('server.js', () => {
   beforeEach(async () => {
@@ -25,9 +26,7 @@ describe('server.js', () => {
         });
       //deny user registration due to missing username
       expect(res.status).toEqual(400);
-      expect(res.body).toMatchObject({
-        errorMessage: 'username, password, email, and track fields are required'
-      });
+      expect(res.body).toMatchObject({message: MISSING_REQUIRED_BODY_FIELD});
     });
     it('should 400 error if password is missing from body', async () => {
       // register a new user
@@ -40,9 +39,7 @@ describe('server.js', () => {
         });
       //deny user registration due to missing password
       expect(res.status).toEqual(400);
-      expect(res.body).toMatchObject({
-        errorMessage: 'username, password, email, and track fields are required'
-      });
+      expect(res.body).toMatchObject({message: MISSING_REQUIRED_BODY_FIELD});
     });
     it('should 400 error if email is missing from body', async () => {
       // register a new user
@@ -56,9 +53,7 @@ describe('server.js', () => {
         });
       //deny user registration due to missing email
       expect(res.status).toEqual(400);
-      expect(res.body).toMatchObject({
-        errorMessage: 'username, password, email, and track fields are required'
-      });
+      expect(res.body).toMatchObject({message: MISSING_REQUIRED_BODY_FIELD});
     });
     it('should 400 error if track id is missing from body', async () => {
       // register a new user
@@ -72,9 +67,7 @@ describe('server.js', () => {
         });
       //deny user registration due to missing track id
       expect(res.status).toEqual(400);
-      expect(res.body).toMatchObject({
-        errorMessage: 'username, password, email, and track fields are required'
-      });
+      expect(res.body).toMatchObject({message: MISSING_REQUIRED_BODY_FIELD});
     });
 
     it('should 400 error if body is empty', async () => {
@@ -84,9 +77,7 @@ describe('server.js', () => {
         .send();
       //deny user registration due to missing username
       expect(res.status).toEqual(400);
-      expect(res.body).toMatchObject({
-        errorMessage: 'body is empty / missing registration data'
-      });
+      expect(res.body).toMatchObject({message: MISSING_BODY_INFO_ERROR});
     });
   });
 });
