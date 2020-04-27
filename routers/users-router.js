@@ -170,7 +170,7 @@ router.delete(
 	validateUserId,
 	validateReviewId,
 	(req, res) => {
-	Revs.deleteReview(res.locals.review.id)
+	Revs.deleteReview(res.locals.review.review_id)
 		.then((deleted) => {
 			res.status(200).json(deleted);
 		})
