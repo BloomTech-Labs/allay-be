@@ -48,23 +48,22 @@ router.get('/:userId', validateUserId, (req, res) => {
 
 //*************** UPDATE USER INFO ******************//
 router.put('/:userId', validateUserId, (req, res) => {
-	const { email, password, username, track_id } = req.body;
+	const { email, password, track_id, first_name, last_name, cohort } = req.body;
 
 	const user = res.locals.user;
 
 	if (
 		email === user.email &&
-		username === user.username &&
 		bcrypt.compareSync(password, user.password) &&
 		track_id === user.track_id
 	) {
 		return res.status(200).json({message: USER_NO_CHANGES_ERROR});
 	} else {
-		User.updateUser(user.id, { email, password, username, track_id })
+		User.updateUser(user.id, { email, password, track_id, first_name, last_name, cohort })
 			.then((updatedInfo) => {
 				res
 					.status(202)
-					.json({ updatedInfo: { email, password, username, track_id } });
+					.json({ updatedInfo: { email, password, track_id, first_name, last_name, cohort } });
 			})
 			.catch(err => {
 				console.log(err);
