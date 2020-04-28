@@ -48,28 +48,69 @@ router.get('/:userId', validateUserId, (req, res) => {
 
 //*************** UPDATE USER INFO ******************//
 router.put('/:userId', validateUserId, (req, res) => {
-	const { email, password, track_id, first_name, last_name, cohort } = req.body;
-
 	const user = res.locals.user;
 
-	if (
-		email === user.email &&
-		bcrypt.compareSync(password, user.password) &&
-		track_id === user.track_id
-	) {
-		return res.status(200).json({message: USER_NO_CHANGES_ERROR});
-	} else {
-		User.updateUser(user.id, { email, password, track_id, first_name, last_name, cohort })
-			.then((updatedInfo) => {
-				res
-					.status(202)
-					.json({ updatedInfo: { email, password, track_id, first_name, last_name, cohort } });
-			})
-			.catch(err => {
-				console.log(err);
-				res.status(500).json({message: UPDATE_USER_ERROR});
-			});
-	}
+	const {
+		email = user.email,
+		password,
+		track_id = user.track_id,
+		first_name = user.first_name,
+		last_name = user.last_name,
+		cohort = user.cohort,
+		contact_email = user.contact_email,
+		location = user.location,
+		graduated = user.graduated,
+		highest_ed = user.highest_ed,
+		field_of_study = user.field_of_study,
+		prior_experience = user.prior_experience,
+		tlsl_experience = user.tlsl_experience,
+		employed_company = user.employed_company,
+		employed_title = user.employed_title,
+		employed_remote = user.employed_remote,
+		employed_start = user.employed_start,
+		resume = user.resume,
+		linked_in = user.linked_in,
+		slack = user.slack,
+		github = user.github,
+		dribble = user.dribble,
+		profile_image = user.profile_image
+	} = req.body;
+
+	const updates = {
+		email,
+		track_id,
+		first_name,
+		last_name,
+		cohort,
+		contact_email,
+		location,
+		graduated,
+		highest_ed,
+		field_of_study,
+		prior_experience,
+		tlsl_experience,
+		employed_company,
+		employed_title,
+		employed_remote,
+		employed_start,
+		resume,
+		linked_in,
+		slack,
+		github,
+		dribble,
+		profile_image
+	};
+
+	if (password) updates.password = bcrypt.hashSync(password, 3);
+
+	User.updateUser(user.id, updates)
+		.then(updatedUser => {
+			res.status(200).json(updatedUser);
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({message: UPDATE_USER_ERROR});
+		});
 });
 
 //*************** UPDATE USER BIND STATUS ******************//
