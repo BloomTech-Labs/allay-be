@@ -27,11 +27,13 @@ function findUserById(userId) {
 		.where('id', userId)
 		.select(
 			'u.id',
-			'u.username',
 			'u.email',
 			'u.track_id',
 			'u.admin',
-			'u.blocked'
+			'u.blocked',
+			'u.first_name',
+			'u.last_name',
+			'u.cohort'
 		)
 		.first()
 		.then(user => {
@@ -53,7 +55,6 @@ function findUserReviews(userId) {
 		.select(
 			'r.id as review_id',
 			'u.id as user_id',
-			'u.username',
 			't.track_name',
 			'rt.review_type',
 			'c.company_name',
@@ -100,7 +101,6 @@ function findUserReviewsById(revId) {
 		.select(
 			'r.id as review_id',
 			'u.id as user_id',
-			'u.username',
 			't.track_name',
 			'rt.review_type',
 			'c.company_name',

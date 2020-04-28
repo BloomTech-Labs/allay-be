@@ -17,14 +17,14 @@ const { jwtSecret } = require('../config/secret.js');
 /*************************** BEGIN REGISTER *******************************/
 
 router.post('/register', checkForRegisterData, (req, res) => {
-	let { username, password, track_id, email } = res.locals.newUser;
+	let { password, track_id, email, first_name, last_name, cohort } = res.locals.newUser;
 	password = bcrypt.hashSync(password, 3); //Change in production!!!
 
-	User.addUser({ username, password, track_id, email })
+	User.addUser({ password, track_id, email, first_name, last_name, cohort })
 		.then((newUser) => {
 			const token = signToken(newUser);
-			const { username: name, id, admin, blocked } = newUser;
-			res.status(201).json({ username: name, token, id, admin, blocked });
+			const { id, admin, blocked, first_name, last_name, email } = newUser;
+			res.status(201).json({ token, id, admin, blocked, first_name, last_name, email });
 		})
 		.catch(err => {
 			console.log(err);
@@ -36,17 +36,16 @@ router.post('/register', checkForRegisterData, (req, res) => {
 /*************************** BEGIN LOGIN *******************************/
 
 router.post('/login', checkForLoginData, (req, res) => {
-	let { username, password } = res.locals.newUser;
+	let { email, password } = res.locals.newUser;
 	// console.log(req.body, 'req.body ln 36');
 
-	User.findUsersBy({ username })
+	User.findUsersBy({ email })
 		.first()
 		.then((user) => {
 			if (user && bcrypt.compareSync(password, user.password)) {
 				const token = signToken(user);
-				const { id, username: name, admin, blocked } = user;
-
-				res.status(200).json({ username: name, token, id, admin, blocked });
+				const { id, admin, blocked, first_name, last_name, email } = user;
+				res.status(200).json({ token, id, admin, blocked, first_name, last_name, email });
 			} else {
 				res.status(401).json({ message: 'Invalid Credentials' });
 			}
@@ -62,12 +61,8 @@ router.post('/login', checkForLoginData, (req, res) => {
 /************************* BEGIN CREATE TOKEN *****************************/
 
 //Create TOKEN
-function signToken(user) {
-	const payload = {
-		id: user.id,
-		email: user.username,
-		admin: user.admin,
-	};
+function signToken({id, email, admin}) {
+	const payload = {id, email, admin};
 
 	const options = {
 		expiresIn: '8h',

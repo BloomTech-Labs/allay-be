@@ -47,10 +47,12 @@ function checkForRegisterData(req, res, next) {
   if (Object.keys(req.body).length === 0) {
     res.status(400).json({message: MISSING_BODY_INFO_ERROR});
   } else if (
-    !req.body.username ||
     !req.body.password ||
     !req.body.email ||
-    !req.body.track_id
+    !req.body.track_id ||
+    !req.body.first_name ||
+    !req.body.last_name ||
+    !req.body.cohort
   ) {
     res.status(400).json({message: MISSING_REQUIRED_BODY_FIELD});
   } else {
@@ -62,7 +64,7 @@ function checkForRegisterData(req, res, next) {
 function checkForLoginData(req, res, next) {
   if (Object.keys(req.body).length === 0) {
     res.status(400).json({message: MISSING_BODY_INFO_ERROR});
-  } else if (!req.body.username || !req.body.password) {
+  } else if (!req.body.email || !req.body.password) {
     res.status(400).json({message: MISSING_REQUIRED_BODY_FIELD});
   } else {
     res.locals.newUser = req.body;

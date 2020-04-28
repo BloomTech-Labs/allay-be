@@ -15,7 +15,6 @@ function findReviews() {
     .select(
       'r.id as review_id',
       'u.id as user_id',
-      'u.username',
       't.track_name',
       'rt.review_type',
       'c.company_name',
@@ -67,7 +66,6 @@ function findReviewsById(revId) {
     .select(
       'r.id as review_id',
       'u.id as user_id',
-      'u.username',
       't.track_name',
       'rt.review_type',
       'c.company_name',
