@@ -31,12 +31,13 @@ To get the server running locally:
 
 | Method | Endpoint                        | Access Control | Description                           |
 | ------ | ------------------------------- | -------------- | ------------------------------------- |
-| GET    | `/users/all`                    | all users      | Returns list of all users.            |
+| GET    | `/users/all`                    | admins         | Returns list of all users.            |
 | GET    | `/users/:userId`                | all users      | Returns info for a single user by id. |
 | PUT    | `/users/:userId`                | all users      | Update user's account info by id.     |
 | DELETE | `/users/:userId`                | all users      | Delete user's account by id.          |
+| PUT    | `/users/:userId/bind`           | admins         | Updates the user's bind status.       |
 | GET    | `/users/:userId/reviews`        | all users      | Returns a list of review by user.     |
-| GET    | `/users/:userId/reviews/revId`  | all users      | Returns a single review by user.      |
+| GET    | `/users/:userId/reviews/:revId` | all users      | Returns a single review by user.      |
 | POST   | `/users/:userId/add-review`     | all users      | Post helpful review.                  |
 | PUT    | `/users/:userId/reviews/:revId` | all users      | Update a review by id.                |
 | DELETE | `/users/:userId/reviews/:revId` | all users      | Delete a review by id.                |
@@ -66,10 +67,12 @@ To get the server running locally:
 
 ```
 {
-    "username": "nasra555",
     "email": "nasra555@nasra.com",
     "password": "nasra555",
-    "track_id": 1
+    "track_id": 1,
+    "first_name": "John",
+    "last_name": "Doe",
+    "cohort": "Full Time 1"
 }
 ```
 
@@ -78,7 +81,7 @@ To get the server running locally:
 ```
 {
     "id": 1,
-    "username": "nasra555",
+    "email": "nasra555",
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuYXNyYSIsImlhdCI6MTU4NTA2ODAzMSwiZXhwIjoxNTg1MDk2ODMxfQ.szdbRq9uZzvoIw84ka4qelk6ozbIgO8RyQLqtrJ2bqc"
 }
 ```
