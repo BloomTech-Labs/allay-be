@@ -8,12 +8,14 @@ exports.seed = function(knex) {
         // Inserts seed entries
         return knex('users').insert([
           {
-            username: 'Mandi Haase',
             email:'haase1020@gmail.com',
-            password:bcrypt.hashSync("password", 3),
-            track_id:3,
+            first_name: 'Mandi',
+            last_name: 'Haase',
+            password: bcrypt.hashSync("password", 3),
+            track_id: 3,
             admin: true,
-            blocked: false
+            blocked: false,
+            cohort: 'Full Time 1'
           }, 
         ]);
       });
