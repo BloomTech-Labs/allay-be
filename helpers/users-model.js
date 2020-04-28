@@ -33,7 +33,24 @@ function findUserById(userId) {
 			'u.blocked',
 			'u.first_name',
 			'u.last_name',
-			'u.cohort'
+			'u.cohort',
+			'u.contact_email',
+			'u.location',
+			'u.graduated',
+			'u.highest_ed',
+			'u.field_of_study',
+			'u.prior_experience',
+			'u.tlsl_experience',
+			'u.employed_company',
+			'u.employed_title',
+			'u.employed_remote',
+			'u.employed_start',
+			'u.resume',
+			'u.linked_in',
+			'u.slack',
+			'u.github',
+			'u.dribble',
+			'u.profile_image'
 		)
 		.first()
 		.then(user => {

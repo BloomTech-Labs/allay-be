@@ -48,28 +48,66 @@ router.get('/:userId', validateUserId, (req, res) => {
 
 //*************** UPDATE USER INFO ******************//
 router.put('/:userId', validateUserId, (req, res) => {
-	const { email, password, track_id, first_name, last_name, cohort } = req.body;
+	const {
+		email,
+		password,
+		track_id,
+		first_name,
+		last_name,
+		cohort,
+		contact_email,
+		location,
+		graduated,
+		highest_ed,
+		field_of_study,
+		prior_experience,
+		tlsl_experience,
+		employed_company,
+		employed_title,
+		employed_remote,
+		employed_start,
+		resume,
+		linked_in,
+		slack,
+		github,
+		dribble,
+		profile_image
+	} = req.body;
 
 	const user = res.locals.user;
 
-	if (
-		email === user.email &&
-		bcrypt.compareSync(password, user.password) &&
-		track_id === user.track_id
-	) {
-		return res.status(200).json({message: USER_NO_CHANGES_ERROR});
-	} else {
-		User.updateUser(user.id, { email, password, track_id, first_name, last_name, cohort })
-			.then((updatedInfo) => {
-				res
-					.status(202)
-					.json({ updatedInfo: { email, password, track_id, first_name, last_name, cohort } });
-			})
-			.catch(err => {
-				console.log(err);
-				res.status(500).json({message: UPDATE_USER_ERROR});
-			});
-	}
+	User.updateUser(user.id, {
+		email,
+		password: bcrypt.hashSync(password, 3),
+		track_id,
+		first_name,
+		last_name,
+		cohort,
+		contact_email,
+		location,
+		graduated,
+		highest_ed,
+		field_of_study,
+		prior_experience,
+		tlsl_experience,
+		employed_company,
+		employed_title,
+		employed_remote,
+		employed_start,
+		resume,
+		linked_in,
+		slack,
+		github,
+		dribble,
+		profile_image
+	})
+		.then(updatedUser => {
+			res.status(200).json(updatedUser);
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({message: UPDATE_USER_ERROR});
+		});
 });
 
 //*************** UPDATE USER BIND STATUS ******************//
