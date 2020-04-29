@@ -1,54 +1,41 @@
 const request = require('supertest');
-const server = require('../api/server.js');
+
+const createUser = require('./utils/');
 const db = require('../data/dbConfig.js');
+const server = require('../api/server.js');
+const signToken = require('../config/token');
+const User = require('../helpers/users-model.js');
 
-/************** BEGIN GET TEST *****************/
-describe('GET TEST', () => {
-  /*
-   */
-  describe('GET single USER by user id /api/users/:id', () => {
-    beforeEach(async () => {
-      await db.raw('truncate table reviews restart identity cascade');
-      await db.raw('truncate table companies restart identity cascade');
-      await db.raw('truncate table users restart identity cascade');
+
+const user = createUser();
+
+function get(token) {
+  return request(server).get(`/api/users/${user.id}`).set('Authorization', token);
+}
+
+describe('Routers Users', () => {
+  beforeAll(async () => {
+    await db.raw('TRUNCATE TABLE users RESTART IDENTITY CASCADE;');
+    await db('users').insert(user);
+  });
+
+  describe('GET /api/users/:userId', () => {
+    it('Should return 200 on success', async () => {
+      const token = signToken(user);
+
+      const res = await get(token);
+
+      expect(res.status).toBe(200);
     });
-    /*
-     */
-    //make POST request to register
-    it('should register, login, get token and display json', async () => {
-      const res = await request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'test',
-          email: 'test@test.com',
-          password: '1234',
-          track_id: 4
-        });
 
-      //make POST request to login and get token
-      const res2 = await request(server)
-        .post('/api/auth/login')
-        .send({
-          username: 'test',
-          password: '1234'
-        });
-      const token = res2.body.token; //store login token
+    it('Should return proper body', async () => {
+      const token = signToken(user);
 
-      //make GET request for info
-      const res3 = await request(server)
-        .get('/api/users/1')
-        .set('Authorization', token);
-      expect(res3.type).toBe('application/json');
-      expect([
-        { id: '1' },
-        { username: 'test' },
-        { email: 'test@test.com' }
-      ]).toMatchObject([
-        { id: '1' },
-        { username: 'test' },
-        { email: 'test@test.com' }
-      ]);
+      const res = await get(token);
+
+      const userInfo = await User.findUserById(user.id);
+
+      expect(res.body).toEqual(userInfo);
     });
   });
 });
-/************** END GET TEST *****************/
