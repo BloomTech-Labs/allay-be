@@ -1,55 +1,42 @@
 const request = require('supertest');
-const server = require('../api/server.js');
+
+const createUser = require('./utils/');
 const db = require('../data/dbConfig.js');
+const server = require('../api/server.js');
+const signToken = require('../config/token');
+const User = require('../helpers/users-model.js');
 
-/************** BEGIN GET TEST *****************/
-describe('GET TEST', () => {
-  /*
-   */
-  describe('GET all USERS /api/users/all', () => {
-    beforeEach(async () => {
-      await db.raw('truncate table reviews restart identity cascade');
-      await db.raw('truncate table companies restart identity cascade');
-      await db.raw('truncate table users restart identity cascade');
+
+const admin = createUser({admin: true});
+const user = createUser(({id: 2, email: 'other@user.com'}));
+
+function get(token) {
+  return request(server).get(`/api/users/all`).set('Authorization', token);
+}
+
+describe('Routers Users', () => {
+  beforeAll(async () => {
+    await db.raw('TRUNCATE TABLE users RESTART IDENTITY CASCADE;');
+    await db('users').insert([admin, user]);
+  });
+
+  describe('GET /api/users/all', () => {
+    it('Should return 200 on success', async () => {
+      const token = signToken(admin);
+
+      const res = await get(token);
+
+      expect(res.status).toBe(200);
     });
-    /*
-     */
-    //make POST request to register
-    it('should register, login, get token and display json', async () => {
-      const res = await request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'test',
-          email: 'test@test.com',
-          password: '1234',
-          track_id: 5
-        });
 
-      //make POST request to login and get token
-      const res2 = await request(server)
-        .post('/api/auth/login')
-        .send({
-          username: 'test',
-          password: '1234'
-        });
-      const token = res2.body.token; //store login token
+    it('Should return proper body', async () => {
+      const token = signToken(admin);
 
-      //make GET request for info
-      const res3 = await request(server)
-        .get('/api/users/all')
-        .set('Authorization', token);
-      expect(res3.type).toBe('application/json');
-      expect([
-        { id: '1' },
-        { username: 'test' },
-        { email: 'test@test.com' }
-      ]).toMatchObject([
-        { id: '1' },
-        { username: 'test' },
-        { email: 'test@test.com' }
-      ]);
+      const res = await get(token);
+
+      const allUsers = await User.findUsers();
+
+      expect(res.body).toEqual(allUsers);
     });
   });
 });
-
-/************** END GET TEST *****************/
