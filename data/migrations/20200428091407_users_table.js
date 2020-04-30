@@ -18,12 +18,12 @@ exports.up = function(knex, Promise) {
         tbl.string('employed_title', 128);
         tbl.boolean('employed_remote');
         tbl.date('employed_start');
-        tbl.string('resume', 128);
+        tbl.string('resume', 300);
         tbl.string('linked_in', 128);
         tbl.string('slack', 128);
         tbl.string('github', 128);
         tbl.string('dribble', 128);
-        tbl.string('profile_image', 128);
+        tbl.string('profile_image', 300);
       });
     });
 };
