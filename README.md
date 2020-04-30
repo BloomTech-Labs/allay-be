@@ -375,6 +375,18 @@ create a .env file that includes the following:
 
 <!-- - JWT*SECRET - you can generate this by using a python shell and running import random''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&amp;*(-_=+)') for i in range(50)]) -->
 
+## Seeding Companies.csv File into Heroku Server
+
+- Log into the Heroku site for Allay. Click on labs21-allay-be, then select the **Resources** tab. Click on **Heroku Postgres**, then the **Settings** tab, then the **View Credentials** button for database credentials.
+- In pgAdmin, create a new server <server-name> and in the **Connection** tab enter the **host name/address** and **password** from Heroku.Verify the port number is the same as shown in Heroku. In the **Connection** tab, enter the database and user designated from Heroku. 
+- In the **Advanced** tab in pgAdmin, the **DB restriction name** is the database from Heroku. Don’t forget this step! It’s the same DB name as in the **Connection** tab in pgAdmin.
+- Return to the Heroku dashboard. Click on the **More** button on the top right and select **Run console**.
+- Run **npx knex migrate:rollback**. Continue to do so until you reach the base file. 
+- Run **npx knex migrate:latest**.
+- Return to pgAdmin. Select the **companies** table, right click and select **Import/Export** data. In the popup box, move the **Import/Export** toggle to **Export** and select the **companies.csv** file for the filename. In the **Columns** tab, remove **id** from the columns to import, then click **OK**. 
+- In Heroku, in the **run console** enter **npx knex seed:run**.
+- Verify in the production website that the companies appear.
+
 ## Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
