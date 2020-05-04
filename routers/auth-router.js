@@ -17,14 +17,61 @@ const { jwtSecret } = require('../config/secret.js');
 /*************************** BEGIN REGISTER *******************************/
 
 router.post('/register', checkForRegisterData, (req, res) => {
-	let { password, track_id, email, first_name, last_name, cohort } = res.locals.newUser;
+	let {
+		email,
+		password,
+		track_id,
+		first_name,
+		last_name,
+		cohort,
+		contact_email,
+		location,
+		graduated,
+		highest_ed,
+		field_of_study,
+		prior_experience,
+		tlsl_experience,
+		employed_company,
+		employed_title,
+		employed_remote,
+		employed_start,
+		resume,
+		linked_in,
+		slack,
+		github,
+		dribble,
+		profile_image
+	} = req.body;
 	password = bcrypt.hashSync(password, 3); //Change in production!!!
-
-	User.addUser({ password, track_id, email, first_name, last_name, cohort })
-		.then((newUser) => {
+	const user = {
+		email,
+		password,
+		track_id,
+		first_name,
+		last_name,
+		cohort,
+		contact_email,
+		location,
+		graduated,
+		highest_ed,
+		field_of_study,
+		prior_experience,
+		tlsl_experience,
+		employed_company,
+		employed_title,
+		employed_remote,
+		employed_start,
+		resume,
+		linked_in,
+		slack,
+		github,
+		dribble,
+		profile_image
+	};
+	User.addUser(user)
+		.then(newUser => {
 			const token = signToken(newUser);
-			const { id, admin, blocked, first_name, last_name, email } = newUser;
-			res.status(201).json({ token, id, admin, blocked, first_name, last_name, email });
+			res.status(201).json({token, user: newUser});
 		})
 		.catch(err => {
 			console.log(err);
