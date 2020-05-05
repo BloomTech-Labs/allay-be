@@ -73,7 +73,8 @@ router.put('/:userId', validateUserId, (req, res) => {
 		slack = user.slack,
 		github = user.github,
 		dribble = user.dribble,
-		profile_image = user.profile_image
+		profile_image = user.profile_image,
+		portfolio = user.portfolio
 	} = req.body;
 
 	const updates = {
@@ -98,7 +99,8 @@ router.put('/:userId', validateUserId, (req, res) => {
 		slack,
 		github,
 		dribble,
-		profile_image
+		profile_image,
+		portfolio
 	};
 
 	if (password) updates.password = bcrypt.hashSync(password, 3);
