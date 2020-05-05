@@ -40,7 +40,8 @@ router.post('/register', checkForRegisterData, (req, res) => {
 		slack,
 		github,
 		dribble,
-		profile_image
+		profile_image,
+		portfolio
 	} = req.body;
 	password = bcrypt.hashSync(password, 3); //Change in production!!!
 	const user = {
@@ -66,7 +67,8 @@ router.post('/register', checkForRegisterData, (req, res) => {
 		slack,
 		github,
 		dribble,
-		profile_image
+		profile_image,
+		portfolio
 	};
 	User.addUser(user)
 		.then(newUser => {

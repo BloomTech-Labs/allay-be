@@ -50,7 +50,8 @@ function findUserById(userId) {
 			'u.slack',
 			'u.github',
 			'u.dribble',
-			'u.profile_image'
+			'u.profile_image',
+			'u.portfolio'
 		)
 		.first()
 		.then(user => {
