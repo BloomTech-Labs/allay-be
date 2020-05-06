@@ -18,6 +18,12 @@ To get the server running locally:
 - Express for flexibility, simple routing, and middleware support
 - Postgres for data persistence
 
+### ESLint && Prettier 
+
+- Configuration is already set up
+- Team members most download prettier && ESLint as a VScode plugin
+- for more information on changing the config files visit: https://lambda-school-labs.github.io/labs-guides/topics/eslint-prettier-setup/
+
 ## Endpoints
 
 #### Auth Routes
