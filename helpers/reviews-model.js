@@ -15,6 +15,9 @@ function findReviews() {
     .select(
       'r.id as review_id',
       'u.id as user_id',
+      'u.first_name as user_first_name',
+      'u.last_name as user_last_name',
+      'u.profile_image as user_profile_image',
       't.track_name',
       'rt.review_type',
       'c.company_name',
@@ -66,6 +69,9 @@ function findReviewsById(revId) {
     .select(
       'r.id as review_id',
       'u.id as user_id',
+      'u.first_name as user_first_name',
+      'u.last_name as user_last_name',
+      'u.profile_image as user_profile_image',
       't.track_name',
       'rt.review_type',
       'c.company_name',
