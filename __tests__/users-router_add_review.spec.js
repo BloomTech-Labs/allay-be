@@ -8,27 +8,27 @@ const company = createCompany();
 const user = createUser();
 const review = createReview();
 
+const method = 'post';
 const token = signToken(user);
 
 
-describe('Routers Reviews', () => {
+describe('Routers Users', () => {
   beforeAll(async () => {
     await resetTable('reviews', 'users', 'companies');
     await db('companies').insert(company);
     await db('users').insert(user);
-    await db('reviews').insert(review);
   });
 
-  describe('GET /api/reviews/:reviewId', () => {
-    it('Return correct body', async () => {
-      const {body, status, type} = await request(`/api/reviews/${review.id}`, {token});
+  describe('POST /api/users/:userId/add-review', () => {
+    it('Returns correct body', async () => {
+      const {body, status, type} = await request(`/api/users/${user.id}/add-review`, {method, token, body: review});
 
-      expect(status).toBe(200);
+      expect(status).toBe(201);
       expect(type).toBe('application/json');
 
-      const reviewInfo = JSON.parse(JSON.stringify(await Review.findReviewsById(review.id)));
+      const newReview = JSON.parse(JSON.stringify(await Review.findReviewsById(review.id)));
 
-      expect(body).toEqual(reviewInfo);
+      expect(body).toEqual(newReview);
     });
   });
 });

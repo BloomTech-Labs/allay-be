@@ -47,11 +47,14 @@
 			"**/*.{js,jsx}",
 			"!**/node_modules/**",
 			"!**/vendor/**"
+		],
+		"testPathIgnorePatterns": [
+			"/utils/"
 		]
 	},
 	"devDependencies": {
+		"cross-env": "^7.0.0",
 		"jest": "^25.1.0",
-		"supertest": "^4.0.2",
-		"cross-env": "^7.0.0"
+		"supertest": "^4.0.2"
 	}
 }

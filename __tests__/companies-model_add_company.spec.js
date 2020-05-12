@@ -9,14 +9,15 @@ const company = createCompany();
 describe('Models Companies', () => {
   beforeAll(async () => {
     await resetTable('companies');
-    await db('companies').insert(company);
   });
 
-  describe('findCompanies()', () => {
-    it('Gets all companies', async () => {
-      const companies = await Company.findCompanies();
-      expect(companies).toHaveLength(1);
-      expect(companies[0]).toEqual(company);
+  describe('addCompany()', () => {
+    it('Adds company', async () => {
+      await Company.addCompany(company);
+
+      const reviews = await db('companies');
+
+      expect(reviews).toHaveLength(1);
     });
   });
 });

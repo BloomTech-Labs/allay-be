@@ -1,102 +1,37 @@
-const request = require('supertest');
-const server = require('../api/server');
+const {createUser, resetTable, request} = require('./utils/');
 const Users = require('../helpers/users-model');
-const db = require('../data/dbConfig');
 
-describe('server.js', () => {
+
+const user = createUser();
+
+const url = '/api/auth/register';
+const method = 'post';
+
+
+describe('Routers Users', () => {
   beforeEach(async () => {
-    await db.raw('truncate table reviews restart identity cascade');
-    await db.raw('truncate table companies restart identity cascade');
-    await db.raw('truncate table users restart identity cascade');
+    await resetTable('users');
   });
 
-  /*************************** REGISTER *******************************/
+  describe('POST /api/auth/register', () => {
+    it('Adds user to database and returns user', async () => {
+      const {status, type} = await request(url, {method, body: user});
 
-  describe('POST /auth/register', () => {
-    it('should add a user to the database', async () => {
-      //checks that the database is empty
-      const users = await db('users');
-      expect(users).toHaveLength(0);
-      //adds a user to the database
-      await Users.addUser({
-        username: 'cloudStrife',
-        password: 'midgar',
-        email: 'cloud@gaea.com',
-        track_id: 1
-      });
-      //open the database and see that the new user is there
-      const newUsers = await db('users');
-      expect(newUsers).toHaveLength(1);
+      expect(status).toEqual(201);
+      expect(type).toEqual('application/json');
+
+      const newUser = Users.findUserById(user.id);
+      expect(newUser).not.toBeUndefined();
+      expect(newUser).not.toBeNull();
     });
-    it('check the name of the added user is correct', async () => {
-      //checks that the database is empty
-      const users = await db('users');
-      expect(users).toHaveLength(0);
-      //adds a user to the database
-      await Users.addUser({
-        username: 'solid snake',
-        password: 'FOXDIE',
-        email: 'snake@shadowmoses.com',
-        track_id: 1
-      });
-      //open the database and see that the new user is there
-      const newUsers = await db('users');
-      expect(newUsers[0].username).toBe('solid snake');
-    });
-    it('should return 201 OK status when adding a user', () => {
-      return request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'joker',
-          password: 'phantomthieves',
-          email: 'joker@shibuya.com',
-          track_id: 1
-        })
-        .expect(201);
-    });
-    it('should return 500 error status if username is not unique / already exists in the database', async () => {
-      //adding a user
-      res = await request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'link',
-          password: 'triforce',
-          email: 'link@hyrule.com',
-          track_id: 1
-        })
-        .expect(201);
-      //adding a second user with the same username as the first
-      res = await request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'link',
-          password: 'mastersword',
-          email: 'link@lorule.com',
-          track_id: 1
-        })
-        .expect(500);
-    });
-    it('should return 500 error status if email is not unique / already exists in the database', async () => {
-      //adding a user
-      res = await request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'mario',
-          password: 'mushroom',
-          email: 'mario@mushroomkingdom.com',
-          track_id: 1
-        })
-        .expect(201);
-      //adding a second user with the same email as the first
-      res = await request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'drMario',
-          password: 'mushroom',
-          email: 'mario@mushroomkingdom.com',
-          track_id: 1
-        })
-        .expect(500);
+
+    it('Return 500 on duplicate', async () => {
+      await request(url, {method, body: user});
+
+      const {status, type} = await request(url, {method, body: user});
+
+      expect(status).toEqual(500);
+      expect(type).toEqual('application/json');
     });
   });
 });

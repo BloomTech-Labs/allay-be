@@ -1,72 +1,35 @@
-const request = require('supertest');
-const server = require('../api/server');
+const {createUser, resetTable, request} = require('./utils/');
 const db = require('../data/dbConfig');
-const jwt = require('jsonwebtoken');
-const {jwtSecret} = require('../config/secret');
+const signToken = require('../config/token');
+const User = require('../helpers/users-model');
 
-const admin = {
-  id: 1,
-  username: 'admin',
-  email: 'admin@test.com',
-  password: 'password',
-  track_id: 1,
-  admin: true,
-  blocked: false
-};
 
-const user = {
-  id: 2,
-  username: 'user',
-  email: 'user@test.com',
-  password: 'password',
-  track_id: 1,
-  admin: false,
-  blocked: false
-};
+const admin = createUser({admin: true});
+const user = createUser(({id: 2, email: 'other@user.com'}));
 
-function signToken({id, username, admin}) {
-  const payload = {
-    id: id,
-    email: username,
-    admin: admin,
-  };
+const method = 'put';
+const token = signToken(admin);
 
-  const options = {
-    expiresIn: '8h',
-  };
 
-  return jwt.sign(payload, jwtSecret, options);
-}
-
-describe('PUT /api/users/:userId/bind', () => {
+describe('Routers Users', () => {
   beforeEach(async () => {
-    await db.raw('truncate table reviews restart identity cascade');
-    await db.raw('truncate table companies restart identity cascade');
-    await db.raw('truncate table users restart identity cascade');
+    await resetTable('users');
     await db('users').insert([admin, user]);
   });
 
-  it('Should return 202 status code', async () => {
-    const token = signToken(admin);
-    const res = await request(server).put('/api/users/2/bind').set('Authorization', token);
+  describe('PUT /api/users/:userId/bind', () => {
+    it('Should return proper body', async () => {
+      const oldUser = await User.findUserById(user.id);
 
-    expect(res.status).toEqual(202);
-  });
+      const {body, status, type} = await request(`/api/users/${user.id}/bind`, {method, token});
 
-  it('Should bring back same user', async () => {
-    const token = signToken(admin);
-    const res = await request(server).put('/api/users/2/bind').set('Authorization', token);
+      expect(status).toEqual(202);
+      expect(type).toBe('application/json');
 
-    expect(res.body.updatedInfo.id).toEqual(user.id);
-  });
+      const updatedUser = await User.findUserById(user.id);
 
-  it('Should toggle block', async () => {
-    const token = signToken(admin);
-    let res = await request(server).put('/api/users/2/bind').set('Authorization', token);
-
-    expect(res.body.updatedInfo.blocked).not.toEqual(user.blocked);
-
-    res = await request(server).put('/api/users/2/bind').set('Authorization', token);
-    expect(res.body.updatedInfo.blocked).toEqual(user.blocked);
+      expect(body).toEqual({updatedInfo: updatedUser});
+      expect(updatedUser).toEqual({...oldUser, blocked: !oldUser.blocked});
+    });
   });
 });

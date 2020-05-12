@@ -1,14 +1,12 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const User = require('../helpers/users-model.js');
 const {
 	checkForRegisterData,
 	checkForLoginData,
 } = require('../middleware/index.js');
-
-const { jwtSecret } = require('../config/secret.js');
+const signToken = require('../config/token');
 
 /**************************************************************************/
 
@@ -106,19 +104,5 @@ router.post('/login', checkForLoginData, (req, res) => {
 });
 
 /*************************** END LOGIN *******************************/
-
-/************************* BEGIN CREATE TOKEN *****************************/
-
-//Create TOKEN
-function signToken({id, email, admin}) {
-	const payload = {id, email, admin};
-
-	const options = {
-		expiresIn: '8h',
-	};
-	return jwt.sign(payload, jwtSecret, options);
-}
-
-/************************* END CREATE TOKEN *****************************/
 
 module.exports = router;
