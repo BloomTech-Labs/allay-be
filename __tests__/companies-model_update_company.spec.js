@@ -1,50 +1,27 @@
+const {createCompany, resetTable} = require('./utils/');
 const db = require('../data/dbConfig');
-const Reviews = require('../helpers/reviews-model');
 const Company = require('../helpers/companies-model');
 
-describe('Companies Model', () => {
-  beforeEach(async () => {
-    await db.raw('truncate table reviews restart identity cascade');
-    await db.raw('truncate table companies restart identity cascade');
-    await db.raw('truncate table users restart identity cascade');
+
+const company = createCompany();
+
+
+describe('Models Companies', () => {
+  beforeAll(async () => {
+    await resetTable('companies');
+    await db('companies').insert(company);
   });
+
   describe('updateCompany()', () => {
-    it('can add a an existing company', async () => {
-      // POST new company
-      const new_company = {
-        company_name: 'Ignacio Test Company',
-        state_id: 5,
-        hq_city: 'San Francisco'
-      };
-      const new_company_2 = {
-        company_name: 'Spencer Test Company',
-        state_id: 5,
-        hq_city: 'San Francisco'
-      };
-      const new_company_3 = {
-        company_name: 'Matt Test Company',
-        state_id: 5,
-        hq_city: 'San Francisco'
-      };
-      const update_company = {
-        company_name: 'Aaron Test Company',
-        state_id: 5,
-        hq_city: 'San Francisco'
-      };
+    it('Update company', async () => {
+      const oldReview = await db('companies').where({id: company.id}).first();
+      const changes = {company_name: 'test'};
 
-      // add the companies to the database
-      await Company.addCompany(new_company);
-      await Company.addCompany(new_company_2);
-      await Company.addCompany(new_company_3);
+      await Company.updateCompany(1, changes);
 
-      //update the company
-      await Company.updateCompany(2, update_company);
+      const updatedCompanies = await db('companies').where({id: company.id}).first();
 
-      //access db
-      const companies = await db('companies');
-      // tests
-      expect(companies).toHaveLength(3);
-      expect(companies[2].company_name).toBe(update_company.company_name);
+      expect({...oldReview, ...changes}).toEqual(updatedCompanies);
     });
   });
 });

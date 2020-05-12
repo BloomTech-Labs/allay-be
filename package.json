@@ -40,6 +40,9 @@
 			"**/*.{js,jsx}",
 			"!**/node_modules/**",
 			"!**/vendor/**"
+		],
+		"testPathIgnorePatterns": [
+			"/utils/"
 		]
 	},
 	"devDependencies": {

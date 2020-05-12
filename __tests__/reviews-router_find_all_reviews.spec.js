@@ -1,43 +1,34 @@
-const request = require('supertest');
-const server = require('../api/server.js');
-const db = require('../data/dbConfig.js');
+const {createCompany, createReview, createUser, resetTable, request} = require('./utils/');
+const db = require('../data/dbConfig');
+const signToken = require('../config/token');
+const Review = require('../helpers/reviews-model');
 
-/************** BEGIN GET TEST *****************/
-describe('GET TESTS', () => {
-  /*
-   */
-  describe('GET all REVIEWS /api/reviews', () => {
-    beforeEach(async () => {
-      await db.raw('truncate table reviews restart identity cascade');
-      await db.raw('truncate table companies restart identity cascade');
-      await db.raw('truncate table users restart identity cascade');
-    });
-    /*
-     */
-    //make POST request to register
-    it('should register, login, get token and display json', async () => {
-      const res = await request(server)
-        .post('/api/auth/register')
-        .send({
-          username: 'test',
-          email: 'test@test.com',
-          password: '1234',
-          track_id: 3
-        });
 
-      //make POST request to login and get token
-      const res2 = await request(server)
-        .post('/api/auth/login')
-        .send({ username: 'test', password: '1234' });
-      const token = res2.body.token; //store login token
+const company = createCompany();
+const user = createUser();
+const review = createReview();
 
-      //make GET request for info
-      const res3 = await request(server)
-        .get('/api/reviews')
-        .set('Authorization', token);
-      expect(res3.type).toBe('application/json');
+const token = signToken(user);
+
+
+describe('Routers Reviews', () => {
+  beforeAll(async () => {
+    await resetTable('reviews', 'users', 'companies');
+    await db('companies').insert(company);
+    await db('users').insert(user);
+    await db('reviews').insert(review);
+  });
+
+  describe('GET /api/reviews', () => {
+    it('Returns correct body', async () => {
+      const {body, status, type} = await request('/api/reviews', {token});
+
+      expect(status).toEqual(200);
+      expect(type).toEqual('application/json');
+
+      const reviews = JSON.parse(JSON.stringify(await Review.findReviews()));
+
+      expect(body).toEqual(reviews);
     });
   });
 });
-
-/************** END GET TEST *****************/

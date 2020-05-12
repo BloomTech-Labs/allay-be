@@ -1,42 +1,31 @@
-const request = require('supertest');
-
-const createUser = require('./utils/');
-const db = require('../data/dbConfig.js');
-const server = require('../api/server.js');
+const {createUser, request, resetTable} = require('./utils/');
+const db = require('../data/dbConfig');
 const signToken = require('../config/token');
-const User = require('../helpers/users-model.js');
+const User = require('../helpers/users-model');
 
 
 const admin = createUser({admin: true});
 const user = createUser(({id: 2, email: 'other@user.com'}));
 
-function get(token) {
-  return request(server).get(`/api/users/all`).set('Authorization', token);
-}
+const token = signToken(admin);
+
 
 describe('Routers Users', () => {
   beforeAll(async () => {
-    await db.raw('TRUNCATE TABLE users RESTART IDENTITY CASCADE;');
+    await resetTable('users');
     await db('users').insert([admin, user]);
   });
 
   describe('GET /api/users/all', () => {
-    it('Should return 200 on success', async () => {
-      const token = signToken(admin);
-
-      const res = await get(token);
-
-      expect(res.status).toBe(200);
-    });
-
     it('Should return proper body', async () => {
-      const token = signToken(admin);
+      const {body, status, type} = await request('/api/users/all', {token});
 
-      const res = await get(token);
+      expect(status).toBe(200);
+      expect(type).toBe('application/json');
 
       const allUsers = await User.findUsers();
 
-      expect(res.body).toEqual(allUsers);
+      expect(body).toEqual(allUsers);
     });
   });
 });

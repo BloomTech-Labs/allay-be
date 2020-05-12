@@ -1,11 +1,9 @@
 const bcrypt = require('bcryptjs');
-const request = require('supertest');
 
-const createUser = require('./utils/');
-const db = require('../data/dbConfig.js');
-const server = require('../api/server.js');
+const {createUser, resetTable, request} = require('./utils/');
+const db = require('../data/dbConfig');
 const signToken = require('../config/token');
-const User = require('../helpers/users-model.js');
+const User = require('../helpers/users-model');
 
 
 const user = createUser();
@@ -44,31 +42,23 @@ const userFields = [
   [   'profile_image',         'Image URL',  true]
 ];
 
-function put(token, column, value) {
-  return request(server).put(`/api/users/${user.id}`).send({[column]: value}).set('Authorization', token);
-}
+const url = `/api/users/${user.id}`;
+const method = 'put';
+const token = signToken(user);
+
 
 describe('Routers Users', () => {
   beforeEach(async () => {
-    await db.raw('TRUNCATE TABLE users RESTART IDENTITY CASCADE;');
+    await resetTable('users');
     await db('users').insert(user);
   });
 
   describe('PUT /api/users/:userId', () => {
-    it('Return 200 on success', async () => {
-      const token = signToken(user);
-
-      const res = await put(token, 'password', new_password);
-
-      expect(res.status).toBe(200);
-    });
-
     it('Correctly hashes password', async () => {
-      const token = signToken(user);
+      const {status, type} = await request(url, {method, token, body: {password: new_password}});
 
-      const res = await put(token, 'password', new_password);
-
-      expect(res.status).toBe(200);
+      expect(status).toBe(200);
+      expect(type).toBe('application/json');
 
       const {password} = await db('users').where({id: user.id}).select('password').first();
 
@@ -76,14 +66,13 @@ describe('Routers Users', () => {
     });
 
     it('Accepts correct user fields', async () => {
-      const token = signToken(user);
-
       for (const [column, value, shouldChange] of userFields) {
         const oldUser = await db('users').where({id: user.id}).first();
 
-        const res = await put(token, column, value);
+        const {status, type} = await request(url, {method, token, body: {[column]: value}});
 
-        expect(res.status).toBe(200);
+        expect(status).toBe(200);
+        expect(type).toBe('application/json');
 
         const updatedUser = await db('users').where({id: user.id}).first();
 
@@ -99,13 +88,12 @@ describe('Routers Users', () => {
     });
 
     it('Ignores invalid fields', async () => {
-      const token = signToken(user);
-
       const oldUser = await db('users').where({id: user.id}).first();
 
-      const res = await put(token, 'incorrect_field', 'foo');
+      const {status, type} = await request(url, {method, token, body: {incorrect_field: 'foo'}});
 
-      expect(res.status).toBe(200);
+      expect(status).toBe(200);
+      expect(type).toBe('application/json');
 
       const updatedUser = await db('users').where({id: user.id}).first();
 
@@ -113,11 +101,10 @@ describe('Routers Users', () => {
     });
 
     it('Returns correct body', async () => {
-      const token = signToken(user);
-
-      const {body, status} = await put(token, 'password', new_password);
+      const {body, status, type} = await request(url, {method, token, body: {password: new_password}});
 
       expect(status).toBe(200);
+      expect(type).toBe('application/json');
 
       const newUser = await User.findUserById(user.id);
 

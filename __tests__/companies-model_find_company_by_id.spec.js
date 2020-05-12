@@ -1,43 +1,27 @@
+const {createCompany, resetTable} = require('./utils/');
 const db = require('../data/dbConfig');
-const Reviews = require('../helpers/reviews-model');
 const Company = require('../helpers/companies-model');
 
-describe('Companies Model', () => {
-  beforeEach(async () => {
-    await db.raw('truncate table reviews restart identity cascade');
-    await db.raw('truncate table companies restart identity cascade');
-    await db.raw('truncate table users restart identity cascade');
+
+const company = createCompany();
+
+
+describe('Models Companies', () => {
+  beforeAll(async () => {
+    await resetTable('companies');
+    await db('companies').insert(company);
   });
+
   describe('findCompaniesById()', () => {
-    it('can add a few companies then find a specific companies', async () => {
-      // POST new company
-      const new_company = {
-        company_name: 'Ignacio Test Company',
-        state_id: 1,
-        hq_city: 'San Francisco'
-      };
-      const new_company_2 = {
-        company_name: 'Spencer Test Company',
-        state_id: 1,
-        hq_city: 'San Francisco'
-      };
-      const new_company_3 = {
-        id: 3,
-        company_name: 'Matt Test Company',
-        state_id: 1,
-        hq_city: 'San Francisco'
-      };
+    it('Returns user when review found', async () => {
+      const foundReview = await Company.findCompanyById(company.id);
+      expect(foundReview.id).toEqual(company.id);
+    });
 
-      // add the companies to the database
-      await Company.addCompany(new_company);
-      await Company.addCompany(new_company_2);
-      await Company.addCompany(new_company_3);
+    it('Returns null when no review found', async () => {
+      const foundReview = await Company.findCompanyById(2);
 
-      //access db using the model
-      const companies = await db('companies');
-      // tests
-      expect(companies).toHaveLength(3);
-      expect(companies[2].id).toBe(new_company_3.id);
+      expect(foundReview).toBeNull();
     });
   });
 });

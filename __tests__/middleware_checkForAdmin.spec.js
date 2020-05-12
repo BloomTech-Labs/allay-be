@@ -1,7 +1,9 @@
-const request = require('supertest');
-const server = require('../api/server');
-const jwt = require('jsonwebtoken');
-const {jwtSecret} = require('../config/secret');
+const {createUser, request} = require('./utils/');
+const signToken = require('../config/token');
+
+
+const admin = createUser({admin: true});
+const user = createUser({id: 2});
 
 const methods = [
   ['/api/users/all', 'get'],
@@ -9,43 +11,28 @@ const methods = [
   ['/api/companies/1', 'delete']
 ];
 
-function signToken({id, username, admin}) {
-  const payload = {
-    id: id,
-    email: username,
-    admin: admin,
-  };
 
-  const options = {
-    expiresIn: '8h',
-  };
-
-  return jwt.sign(payload, jwtSecret, options);
-}
-
-async function getResponse(url, method, token) {
-  return request(server)[method](url).set('Authorization', token);
-}
-
-describe('server.js', () => {
-  describe('Admin Restriction Middleware', () => {
+describe('Middleware', () => {
+  describe('checkForAdmin', () => {
     it('Should return 403 if not admin', async () => {
-      const token = signToken({id: '1', email: 'test@test.com', admin: false});
+      const token = signToken(user);
 
       for (const [url, method] of methods) {
-        const res = await getResponse(url, method, token);
+        const {status, type} = await request(url, {method, token});
 
-        expect(res.status).toEqual(403);
+        expect(status).toEqual(403);
+        expect(type).toEqual('application/json');
       }
     });
 
     it('Should not return 403 if admin', async () => {
-      const token = signToken({id: '1', email: 'test@test.com', admin: true});
+      const token = signToken(admin);
 
       for (const [url, method] of methods) {
-        const res = await getResponse(url, method, token);
+        const {status, type} = await request(url, {method, token});
 
-        expect(res.status).not.toEqual(403);
+        expect(status).not.toEqual(403);
+        expect(type).toEqual('application/json')
       }
     });
   });

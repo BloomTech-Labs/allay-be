@@ -1,38 +1,27 @@
-const bcrypt = require('bcryptjs');
-const request = require('supertest');
-
-const createUser = require('./utils/');
-const db = require('../data/dbConfig.js');
-const server = require('../api/server.js');
+const {createUser, request, resetTable} = require('./utils/');
+const db = require('../data/dbConfig');
 const signToken = require('../config/token');
-const User = require('../helpers/users-model.js');
+const User = require('../helpers/users-model');
 
 
 const user = createUser();
 
-function del(token) {
-  return request(server).del(`/api/users/${user.id}`).set('Authorization', token);
-}
+const method = 'del';
+const token = signToken(user);
+
 
 describe('Routers Users', () => {
-  beforeEach(async () => {
-    await db.raw('TRUNCATE TABLE users RESTART IDENTITY CASCADE;');
+  beforeAll(async () => {
+    await resetTable('users');
     await db('users').insert(user);
   });
 
   describe('DELETE /api/users/:userId', () => {
-    it('Return 200 on success', async () => {
-      const token = signToken(user);
-
-      const res = await del(token);
-
-      expect(res.status).toBe(200);
-    });
-
     it('Deletes user on success', async () => {
-      const token = signToken(user);
+      const {status, type} = await request(`/api/users/${user.id}`, {method, token});
 
-      await del(token);
+      expect(status).toBe(200);
+      expect(type).toBe('application/json');
 
       const deletedUser = await User.findUserById(user.id);
 
