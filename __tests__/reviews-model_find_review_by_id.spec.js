@@ -19,13 +19,13 @@ describe('Models Reviews', () => {
   describe('findReviewById()', () => {
     it('Returns user when review found', async () => {
       const foundReview = await Review.findReviewsById(review.id);
-      expect(foundReview.review_id).toBe(review.id);
+      expect(foundReview.id).toBe(review.id);
     });
 
     it('Returns null when no review found', async () => {
       const foundReview = await Review.findReviewsById(2);
 
-      expect(foundReview).toBeUndefined();
+      expect(foundReview).toBeNull();
     });
   });
 });

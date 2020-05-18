@@ -86,13 +86,23 @@ router.post('/login', checkForLoginData, (req, res) => {
 	let { email, password } = res.locals.newUser;
 	// console.log(req.body, 'req.body ln 36');
 
-	User.findUsersBy({ email })
-		.first()
+	User.findUsersBy({email}, true)
 		.then((user) => {
-			if (user && bcrypt.compareSync(password, user.password)) {
-				const token = signToken(user);
-				const { id, admin, blocked, first_name, last_name, email } = user;
-				res.status(200).json({ token, id, admin, blocked, first_name, last_name, email });
+			if (user) {
+				User.findUserPassword(user.id)
+					.then(({password: pass}) => {
+					  if (bcrypt.compareSync(password, pass)) {
+							const token = signToken(user);
+							const { id, admin, blocked, first_name, last_name, email } = user;
+							res.status(200).json({ token, id, admin, blocked, first_name, last_name, email });
+						} else {
+					  	res.status(500).json({message: 'Invalid Credentials'});
+						}
+					})
+					.catch(err => {
+						console.log(err);
+						res.status(500).json({message: 'There was an error signing in'});
+					});
 			} else {
 				res.status(401).json({ message: 'Invalid Credentials' });
 			}
