@@ -1,7 +1,6 @@
 const {request} = require('./utils/');
 const {MISSING_TOKEN_ERROR} = require('../config/errors.js');
 
-
 describe('Middleware', () => {
   describe('restricted', () => {
     it('Token is needed for endpoints', async () => {

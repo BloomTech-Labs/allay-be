@@ -1,13 +1,21 @@
 const {createUser, request} = require('./utils/');
-const {MISSING_REQUIRED_BODY_FIELD, MISSING_BODY_INFO_ERROR} = require('../config/errors');
-
+const {
+  MISSING_REQUIRED_BODY_FIELD,
+  MISSING_BODY_INFO_ERROR,
+} = require('../config/errors');
 
 const user = createUser();
 
-const required_fields = ['first_name', 'last_name', 'password', 'email', 'cohort', 'track_id'];
+const required_fields = [
+  'first_name',
+  'last_name',
+  'password',
+  'email',
+  'cohort',
+  'track_id',
+];
 
 const method = 'post';
-
 
 describe('Middleware', () => {
   describe('checkForRegisterData', () => {
@@ -16,7 +24,10 @@ describe('Middleware', () => {
         const fields = {...user};
         delete fields[field];
 
-        const {body, status, type} = await request('/api/auth/register', {method, body: fields});
+        const {body, status, type} = await request('/api/auth/register', {
+          method,
+          body: fields,
+        });
 
         expect(status).toEqual(400);
         expect(type).toEqual('application/json');
@@ -25,7 +36,9 @@ describe('Middleware', () => {
     });
 
     it('Return 400 if body is empty', async () => {
-      const {body, status, type} = await request('/api/auth/register', {method});
+      const {body, status, type} = await request('/api/auth/register', {
+        method,
+      });
 
       expect(status).toEqual(400);
       expect(type).toEqual('application/json');

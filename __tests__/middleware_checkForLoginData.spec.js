@@ -1,13 +1,14 @@
 const {createUser, request} = require('./utils/');
-const {MISSING_REQUIRED_BODY_FIELD, MISSING_BODY_INFO_ERROR} = require('../config/errors');
-
+const {
+  MISSING_REQUIRED_BODY_FIELD,
+  MISSING_BODY_INFO_ERROR,
+} = require('../config/errors');
 
 const user = createUser();
 
 const required_fields = ['email', 'password'];
 
 const method = 'post';
-
 
 describe('Middleware', () => {
   describe('checkForLoginData', () => {
@@ -16,7 +17,10 @@ describe('Middleware', () => {
         const fields = {...user};
         delete fields[field];
 
-        const {body, status, type} = await request('/api/auth/login', {method, body: fields});
+        const {body, status, type} = await request('/api/auth/login', {
+          method,
+          body: fields,
+        });
 
         expect(status).toEqual(400);
         expect(type).toEqual('application/json');

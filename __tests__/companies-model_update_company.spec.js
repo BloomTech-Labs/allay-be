@@ -2,9 +2,7 @@ const {createCompany, resetTable} = require('./utils/');
 const db = require('../data/dbConfig');
 const Company = require('../helpers/companies-model');
 
-
 const company = createCompany();
-
 
 describe('Models Companies', () => {
   beforeAll(async () => {
@@ -19,7 +17,9 @@ describe('Models Companies', () => {
 
       await Company.updateCompany(1, changes);
 
-      const updatedCompanies = await db('companies').where({id: company.id}).first();
+      const updatedCompanies = await db('companies')
+        .where({id: company.id})
+        .first();
 
       expect({...oldReview, ...changes}).toEqual(updatedCompanies);
     });

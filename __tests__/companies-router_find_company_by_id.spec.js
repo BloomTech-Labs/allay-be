@@ -3,12 +3,10 @@ const db = require('../data/dbConfig');
 const signToken = require('../config/token');
 const Company = require('../helpers/companies-model');
 
-
 const company = createCompany();
 const user = createUser();
 
 const token = signToken(user);
-
 
 describe('Routers Companies', () => {
   beforeAll(async () => {
@@ -18,7 +16,10 @@ describe('Routers Companies', () => {
 
   describe('GET /api/companies/:companyId', () => {
     it('Return correct body', async () => {
-      const {body, status, type} = await request(`/api/companies/${company.id}`, {token});
+      const {body, status, type} = await request(
+        `/api/companies/${company.id}`,
+        {token}
+      );
 
       const companyInfo = await Company.findCompanyById(company.id);
 

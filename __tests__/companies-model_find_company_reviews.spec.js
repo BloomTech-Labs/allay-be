@@ -1,12 +1,15 @@
-const {createCompany, createReview, createUser, resetTable} = require('./utils/');
+const {
+  createCompany,
+  createReview,
+  createUser,
+  resetTable,
+} = require('./utils/');
 const db = require('../data/dbConfig');
 const Company = require('../helpers/companies-model');
-
 
 const company = createCompany();
 const user = createUser();
 const review = createReview();
-
 
 describe('Models Companies', () => {
   beforeAll(async () => {
@@ -18,7 +21,9 @@ describe('Models Companies', () => {
 
   describe('findCompanyReviews()', () => {
     it('Gets company reviews', async () => {
-      const company_reviews = await Company.findCompanyReviews(company.company_name);
+      const company_reviews = await Company.findCompanyReviews(
+        company.company_name
+      );
 
       expect(company_reviews).toHaveLength(1);
     });

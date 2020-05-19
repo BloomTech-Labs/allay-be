@@ -3,13 +3,13 @@ module.exports = {
     node: true,
     es6: true,
   },
-  extends: ["eslint:recommended", "plugin:prettier/recommended"],
+  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   parserOptions: {
     ecmaVersion: 2018,
   },
   overrides: [
     {
-      files: ["**/*.spec.js"],
+      files: ['**/*.spec.js'],
       env: {
         jest: true,
       },

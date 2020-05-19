@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { jwtSecret } = require('../config/secret.js');
+const {jwtSecret} = require('../config/secret.js');
 const Users = require('../helpers/users-model.js');
 const Companies = require('../helpers/companies-model.js');
 const Revs = require('../helpers/reviews-model.js');
@@ -15,7 +15,7 @@ const {
   GET_REVIEW_ERROR,
   REVIEW_NOT_FOUND_ERROR,
   GET_COMPANY_ERROR,
-  COMPANY_NOT_FOUND_ERROR
+  COMPANY_NOT_FOUND_ERROR,
 } = require('../config/errors.js');
 
 module.exports = {
@@ -27,24 +27,26 @@ module.exports = {
   validateCompanyId,
   checkForReviewData,
   validateReviewId,
-  checkForAdmin
+  checkForAdmin,
 };
-
 
 // Auth Router
 
-
 function restricted({headers: {authorization}}, res, next) {
-  if (!authorization) return res.status(401).json({message: MISSING_TOKEN_ERROR});
+  if (!authorization)
+    return res.status(401).json({message: MISSING_TOKEN_ERROR});
 
   jwt.verify(authorization, jwtSecret, (err, decodedToken) => {
     if (err) return res.status(401).json({message: INVALID_TOKEN_ERROR});
 
-    res.locals.authorizedUser = {id: decodedToken.id, email: decodedToken.email, admin: decodedToken.admin};
+    res.locals.authorizedUser = {
+      id: decodedToken.id,
+      email: decodedToken.email,
+      admin: decodedToken.admin,
+    };
     next();
   });
 }
-
 
 function checkForRegisterData(req, res, next) {
   if (Object.keys(req.body).length === 0) {
@@ -86,7 +88,7 @@ async function validateUserId({params: {userId}}, res, next) {
     next();
   } catch (e) {
     console.log(e);
-    res.status(500).json({message: GET_USER_ERROR})
+    res.status(500).json({message: GET_USER_ERROR});
   }
 }
 
@@ -106,13 +108,14 @@ function checkForCompanyData(req, res, next) {
 async function validateCompanyId({params: {companyId}}, res, next) {
   try {
     const company = await Companies.findCompanyById(companyId);
-    if (!company) return res.status(404).json({message: COMPANY_NOT_FOUND_ERROR});
+    if (!company)
+      return res.status(404).json({message: COMPANY_NOT_FOUND_ERROR});
 
     res.locals.company = company;
     next();
   } catch (e) {
     console.log(e);
-    res.status(500).json({message: GET_COMPANY_ERROR})
+    res.status(500).json({message: GET_COMPANY_ERROR});
   }
 }
 
@@ -127,15 +130,13 @@ async function validateReviewId({params: {revId}}, res, next) {
     next();
   } catch (e) {
     console.log(e);
-    res.status(500).json({message: GET_REVIEW_ERROR})
+    res.status(500).json({message: GET_REVIEW_ERROR});
   }
 }
 
 function checkForReviewData(req, res, next) {
   if (Object.keys(req.body).length === 0) {
-    res
-      .status(400)
-      .json({message: MISSING_BODY_INFO_ERROR});
+    res.status(400).json({message: MISSING_BODY_INFO_ERROR});
   } else if (
     !req.body.job_title ||
     !req.body.city ||
@@ -152,7 +153,8 @@ function checkForReviewData(req, res, next) {
 
 //Admin Middleware
 function checkForAdmin(req, res, next) {
-  if (!res.locals.authorizedUser.admin) return res.status(403).json({message: UNAUTHORIZED_ERROR});
+  if (!res.locals.authorizedUser.admin)
+    return res.status(403).json({message: UNAUTHORIZED_ERROR});
 
-  next()
+  next();
 }

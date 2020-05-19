@@ -2,11 +2,9 @@ const {createUser, resetTable, request} = require('./utils/');
 const signToken = require('../config/token');
 const {REVIEW_NOT_FOUND_ERROR} = require('../config/errors.js');
 
-
 const user = createUser();
 
 const token = signToken(user);
-
 
 describe('Middleware', () => {
   beforeAll(async () => {
@@ -14,7 +12,7 @@ describe('Middleware', () => {
   });
 
   describe('validateReviewId', () => {
-    it('Should 404 error if the review doesn\'t exist', async () => {
+    it("Should 404 error if the review doesn't exist", async () => {
       const {body, status, type} = await request('/api/reviews/1', {token});
 
       expect(status).toBe(404);

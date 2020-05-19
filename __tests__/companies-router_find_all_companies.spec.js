@@ -3,12 +3,10 @@ const db = require('../data/dbConfig');
 const signToken = require('../config/token');
 const Company = require('../helpers/companies-model');
 
-
 const company = createCompany();
 const user = createUser();
 
 const token = signToken(user);
-
 
 describe('Routers Companies', () => {
   beforeAll(async () => {
