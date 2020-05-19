@@ -1,15 +1,19 @@
-const {createCompany, createReview, createUser, resetTable, request} = require('./utils/');
+const {
+  createCompany,
+  createReview,
+  createUser,
+  resetTable,
+  request,
+} = require('./utils/');
 const db = require('../data/dbConfig');
 const signToken = require('../config/token');
 const Review = require('../helpers/reviews-model');
-
 
 const company = createCompany();
 const user = createUser();
 const review = createReview();
 
 const token = signToken(user);
-
 
 describe('Routers Reviews', () => {
   beforeAll(async () => {

@@ -6,7 +6,7 @@ module.exports = {
   findReviewsById,
   addReview,
   updateReview,
-  deleteReview
+  deleteReview,
 };
 
 // FIND ALL REVIEWS
@@ -124,14 +124,12 @@ function addReview(newReview) {
 // UPDATE AN EXISTING REVIEW
 function updateReview(id, changes) {
   return db('reviews')
-    .where({ id })
+    .where({id})
     .update(changes)
     .then(count => (count > 0 ? findReviewsById(id) : null));
 }
 
 // DELETE AN EXISTING REVIEW
 function deleteReview(id) {
-  return db('reviews')
-    .where({ id })
-    .del();
+  return db('reviews').where({id}).del();
 }

@@ -2,9 +2,7 @@ const {createUser, resetTable} = require('./utils/');
 const db = require('../data/dbConfig');
 const User = require('../helpers/users-model');
 
-
 const user = createUser();
-
 
 describe('Models Users', () => {
   beforeEach(async () => {

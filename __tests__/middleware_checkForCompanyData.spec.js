@@ -1,8 +1,10 @@
 const {createCompany, createUser, resetTable, request} = require('./utils/');
 const db = require('../data/dbConfig');
 const signToken = require('../config/token');
-const {MISSING_REQUIRED_BODY_FIELD, MISSING_BODY_INFO_ERROR} = require('../config/errors');
-
+const {
+  MISSING_REQUIRED_BODY_FIELD,
+  MISSING_BODY_INFO_ERROR,
+} = require('../config/errors');
 
 const user = createUser();
 const company = createCompany();
@@ -11,7 +13,6 @@ const required_fields = ['company_name', 'state_id'];
 
 const method = 'post';
 const token = signToken(user);
-
 
 describe('Middleware', () => {
   beforeAll(async () => {
@@ -25,7 +26,11 @@ describe('Middleware', () => {
         const fields = {...company};
         delete fields[field];
 
-        const {body, status, type} = await request('/api/companies', {method, token, body: fields});
+        const {body, status, type} = await request('/api/companies', {
+          method,
+          token,
+          body: fields,
+        });
 
         expect(status).toEqual(400);
         expect(type).toEqual('application/json');
@@ -34,7 +39,10 @@ describe('Middleware', () => {
     });
 
     it('Return 400 if body is empty', async () => {
-      const {body, status, type} = await request('/api/companies', {method, token});
+      const {body, status, type} = await request('/api/companies', {
+        method,
+        token,
+      });
 
       expect(status).toEqual(400);
       expect(type).toEqual('application/json');

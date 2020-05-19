@@ -3,12 +3,10 @@ const db = require('../data/dbConfig');
 const signToken = require('../config/token');
 const User = require('../helpers/users-model');
 
-
 const admin = createUser({admin: true});
-const user = createUser(({id: 2, email: 'other@user.com'}));
+const user = createUser({id: 2, email: 'other@user.com'});
 
 const token = signToken(admin);
-
 
 describe('Routers Users', () => {
   beforeAll(async () => {

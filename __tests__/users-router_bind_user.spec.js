@@ -3,13 +3,11 @@ const db = require('../data/dbConfig');
 const signToken = require('../config/token');
 const User = require('../helpers/users-model');
 
-
 const admin = createUser({admin: true});
-const user = createUser(({id: 2, email: 'other@user.com'}));
+const user = createUser({id: 2, email: 'other@user.com'});
 
 const method = 'put';
 const token = signToken(admin);
-
 
 describe('Routers Users', () => {
   beforeEach(async () => {
@@ -21,7 +19,10 @@ describe('Routers Users', () => {
     it('Should return proper body', async () => {
       const oldUser = await User.findUserById(user.id);
 
-      const {body, status, type} = await request(`/api/users/${user.id}/bind`, {method, token});
+      const {body, status, type} = await request(`/api/users/${user.id}/bind`, {
+        method,
+        token,
+      });
 
       expect(status).toEqual(202);
       expect(type).toBe('application/json');

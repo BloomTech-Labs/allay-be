@@ -2,9 +2,7 @@ const {createCompany, resetTable} = require('./utils/');
 const db = require('../data/dbConfig');
 const Company = require('../helpers/companies-model');
 
-
 const company = createCompany();
-
 
 describe('Models Companies', () => {
   beforeAll(async () => {

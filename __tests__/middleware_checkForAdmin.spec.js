@@ -1,16 +1,14 @@
 const {createUser, request} = require('./utils/');
 const signToken = require('../config/token');
 
-
 const admin = createUser({admin: true});
 const user = createUser({id: 2});
 
 const methods = [
   ['/api/users/all', 'get'],
   ['/api/users/1/bind', 'put'],
-  ['/api/companies/1', 'delete']
+  ['/api/companies/1', 'delete'],
 ];
-
 
 describe('Middleware', () => {
   describe('checkForAdmin', () => {
@@ -32,7 +30,7 @@ describe('Middleware', () => {
         const {status, type} = await request(url, {method, token});
 
         expect(status).not.toEqual(403);
-        expect(type).toEqual('application/json')
+        expect(type).toEqual('application/json');
       }
     });
   });

@@ -26,7 +26,6 @@ const ADD_COMPANY_ERROR = 'There was an error adding company.';
 const UPDATE_COMPANY_ERROR = 'There was an error updating company.';
 const DELETE_COMPANY_ERROR = 'There was an error deleting company.';
 
-
 module.exports = {
   UNAUTHORIZED_ERROR,
   MISSING_TOKEN_ERROR,
@@ -54,5 +53,5 @@ module.exports = {
   COMPANY_NOT_FOUND_ERROR,
   ADD_COMPANY_ERROR,
   UPDATE_COMPANY_ERROR,
-  DELETE_COMPANY_ERROR
+  DELETE_COMPANY_ERROR,
 };

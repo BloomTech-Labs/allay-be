@@ -1,4 +1,4 @@
-exports.up = function(knex) {
+exports.up = function (knex) {
   return knex.schema.createTable('reviews', tbl => {
     tbl.increments();
     tbl.string('job_title').notNullable();
@@ -69,17 +69,11 @@ exports.up = function(knex) {
       .inTable('work_status')
       .onUpdate('CASCADE')
       .onDelete('CASCADE');
-    tbl
-      .timestamp('created_at')
-      .notNullable()
-      .defaultTo(knex.raw('now()'));
-    tbl
-      .timestamp('updated_at')
-      .notNullable()
-      .defaultTo(knex.raw('now()'));
+    tbl.timestamp('created_at').notNullable().defaultTo(knex.raw('now()'));
+    tbl.timestamp('updated_at').notNullable().defaultTo(knex.raw('now()'));
   });
 };
 
-exports.down = function(knex) {
+exports.down = function (knex) {
   return knex.schema.dropTableIfExists('reviews');
 };

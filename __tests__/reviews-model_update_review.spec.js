@@ -1,12 +1,15 @@
-const {createCompany, createReview, createUser, resetTable} = require('./utils/');
+const {
+  createCompany,
+  createReview,
+  createUser,
+  resetTable,
+} = require('./utils/');
 const db = require('../data/dbConfig');
 const Review = require('../helpers/reviews-model');
-
 
 const company = createCompany();
 const user = createUser();
 const review = createReview();
-
 
 describe('Models Reviews', () => {
   beforeAll(async () => {

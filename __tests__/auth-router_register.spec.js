@@ -1,12 +1,10 @@
 const {createUser, resetTable, request} = require('./utils/');
 const Users = require('../helpers/users-model');
 
-
 const user = createUser();
 
 const url = '/api/auth/register';
 const method = 'post';
-
 
 describe('Routers Users', () => {
   beforeEach(async () => {

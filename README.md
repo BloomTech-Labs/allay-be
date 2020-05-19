@@ -18,7 +18,7 @@ To get the server running locally:
 - Express for flexibility, simple routing, and middleware support
 - Postgres for data persistence
 
-### ESLint && Prettier 
+### ESLint && Prettier
 
 - Configuration is already set up
 - Team members most download prettier && ESLint as a VScode plugin
@@ -384,12 +384,12 @@ create a .env file that includes the following:
 ## Seeding Companies.csv File into Heroku Server
 
 - Log into the Heroku site for Allay. Click on **labs21-allay-be**, then select the **Resources** tab. Click on **Heroku Postgres**, then the **Settings** tab, then the **View Credentials** button for database credentials.
-- In pgAdmin, create a new server <server-name> and in the **Connection** tab enter the **host name/address** and **password** from Heroku. Verify the port number is the same as shown in Heroku. In the **Connection** tab, enter the database and user designated from Heroku. 
+- In pgAdmin, create a new server <server-name> and in the **Connection** tab enter the **host name/address** and **password** from Heroku. Verify the port number is the same as shown in Heroku. In the **Connection** tab, enter the database and user designated from Heroku.
 - In the **Advanced** tab in pgAdmin, the **DB restriction name** is the database from Heroku. Don’t forget this step! It’s the same DB name as in the **Connection** tab in pgAdmin.
-- Return to the Heroku dashboard. Click on the **More** button  and select **Run console**.
-- Run **npx knex migrate:rollback**. Continue to do so until you reach the base file. 
+- Return to the Heroku dashboard. Click on the **More** button and select **Run console**.
+- Run **npx knex migrate:rollback**. Continue to do so until you reach the base file.
 - Run **npx knex migrate:latest**.
-- Return to pgAdmin. Select the **companies** table, right click and select **Import/Export** data. In the popup box, move the **Import/Export** toggle to **Export** and select the **companies.csv** file for the filename. In the **Columns** tab, remove **id** from the columns to import, then click **OK**. 
+- Return to pgAdmin. Select the **companies** table, right click and select **Import/Export** data. In the popup box, move the **Import/Export** toggle to **Export** and select the **companies.csv** file for the filename. In the **Columns** tab, remove **id** from the columns to import, then click **OK**.
 - In Heroku, in the **run console** enter **npx knex seed:run**.
 - Verify in the production website that the companies appear.
 

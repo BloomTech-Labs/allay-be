@@ -3,11 +3,9 @@ const db = require('../data/dbConfig');
 const signToken = require('../config/token');
 const User = require('../helpers/users-model');
 
-
 const user = createUser();
 
 const token = signToken(user);
-
 
 describe('Routers Users', () => {
   beforeAll(async () => {
@@ -17,7 +15,9 @@ describe('Routers Users', () => {
 
   describe('GET /api/users/:userId', () => {
     it('Should return proper body', async () => {
-      const {body, status, type} = await request(`/api/users/${user.id}`, {token});
+      const {body, status, type} = await request(`/api/users/${user.id}`, {
+        token,
+      });
 
       expect(status).toBe(200);
       expect(type).toBe('application/json');

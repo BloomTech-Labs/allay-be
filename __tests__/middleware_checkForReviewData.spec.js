@@ -1,17 +1,24 @@
 const {createReview, createUser, resetTable, request} = require('./utils/');
 const db = require('../data/dbConfig');
 const signToken = require('../config/token');
-const {MISSING_REQUIRED_BODY_FIELD, MISSING_BODY_INFO_ERROR} = require('../config/errors');
-
+const {
+  MISSING_REQUIRED_BODY_FIELD,
+  MISSING_BODY_INFO_ERROR,
+} = require('../config/errors');
 
 const user = createUser();
 const review = createReview();
 
-const required_fields = ['job_title', 'city', 'state_id', 'salary', 'company_name'];
+const required_fields = [
+  'job_title',
+  'city',
+  'state_id',
+  'salary',
+  'company_name',
+];
 
 const method = 'post';
 const token = signToken(user);
-
 
 describe('Middleware', () => {
   beforeAll(async () => {
@@ -25,7 +32,14 @@ describe('Middleware', () => {
         const fields = {...review};
         delete fields[field];
 
-        const {body, status, type} = await request(`/api/users/${user.id}/add-review`, {method, token, body: fields});
+        const {body, status, type} = await request(
+          `/api/users/${user.id}/add-review`,
+          {
+            method,
+            token,
+            body: fields,
+          }
+        );
 
         expect(status).toEqual(400);
         expect(type).toEqual('application/json');
@@ -34,7 +48,11 @@ describe('Middleware', () => {
     });
 
     it('Return 400 if body is empty', async () => {
-      const {body, status, type} = await request(`/api/users/${user.id}/add-review`, {method, token});
+      const {
+        body,
+        status,
+        type,
+      } = await request(`/api/users/${user.id}/add-review`, {method, token});
 
       expect(status).toEqual(400);
       expect(type).toEqual('application/json');

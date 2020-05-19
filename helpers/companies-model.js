@@ -7,7 +7,7 @@ module.exports = {
   findCompanyReviews,
   addCompany,
   updateCompany,
-  deleteCompany
+  deleteCompany,
 };
 
 // FIND ALL COMPANIES
@@ -23,7 +23,7 @@ function findCompaniesBy(filter) {
 // FIND COMPANY BY ID
 function findCompanyById(id) {
   return db('companies')
-    .where({ id })
+    .where({id})
     .first()
     .then(company => {
       if (!company) return null;
@@ -31,7 +31,7 @@ function findCompanyById(id) {
       return findCompanyReviews(company.company_name).then(companyReviews => {
         return {
           ...company,
-          reviews: companyReviews
+          reviews: companyReviews,
         };
       });
     });
@@ -55,14 +55,12 @@ function addCompany(company) {
 // UPDATE AN EXISTING COMPANY
 function updateCompany(id, changes) {
   return db('companies')
-    .where({ id })
+    .where({id})
     .update(changes)
     .then(count => (count > 0 ? findCompanyById(id) : null));
 }
 
 // DELETE AN EXISTING COMPANY
 function deleteCompany(id) {
-  return db('companies')
-    .where({ id })
-    .del();
+  return db('companies').where({id}).del();
 }
