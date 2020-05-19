@@ -30,7 +30,9 @@ module.exports = {
   checkForAdmin
 };
 
+
 // Auth Router
+
 
 function restricted({headers: {authorization}}, res, next) {
   if (!authorization) return res.status(401).json({message: MISSING_TOKEN_ERROR});
@@ -42,6 +44,7 @@ function restricted({headers: {authorization}}, res, next) {
     next();
   });
 }
+
 
 function checkForRegisterData(req, res, next) {
   if (Object.keys(req.body).length === 0) {
@@ -74,18 +77,17 @@ function checkForLoginData(req, res, next) {
 
 // Users Router
 
-function validateUserId({params: {userId}}, res, next) {
-  Users.findUserById(userId)
-    .then(user => {
-      if (!user) return res.status(404).json({message: USER_NOT_FOUND_ERROR});
+async function validateUserId({params: {userId}}, res, next) {
+  try {
+    const user = await Users.findUserById(userId);
+    if (!user) return res.status(404).json({message: USER_NOT_FOUND_ERROR});
 
-      res.locals.user = user;
-      next();
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({message: GET_USER_ERROR})
-    });
+    res.locals.user = user;
+    next();
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({message: GET_USER_ERROR})
+  }
 }
 
 // Companies Router
@@ -101,34 +103,32 @@ function checkForCompanyData(req, res, next) {
   }
 }
 
-function validateCompanyId({params: {companyId}}, res, next) {
-  Companies.findCompanyById(companyId)
-    .then(company => {
-      if (!company) return res.status(404).json({message: COMPANY_NOT_FOUND_ERROR});
+async function validateCompanyId({params: {companyId}}, res, next) {
+  try {
+    const company = await Companies.findCompanyById(companyId);
+    if (!company) return res.status(404).json({message: COMPANY_NOT_FOUND_ERROR});
 
-      res.locals.company = company;
-      next();
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({message: GET_COMPANY_ERROR})
-    });
+    res.locals.company = company;
+    next();
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({message: GET_COMPANY_ERROR})
+  }
 }
 
 // Reviews Router
 
-function validateReviewId({params: {revId}}, res, next) {
-  Revs.findReviewsById(revId)
-    .then(review => {
-      if (!review) return res.status(404).json({message: REVIEW_NOT_FOUND_ERROR});
+async function validateReviewId({params: {revId}}, res, next) {
+  try {
+    const review = await Revs.findReviewsById(revId);
+    if (!review) return res.status(404).json({message: REVIEW_NOT_FOUND_ERROR});
 
-      res.locals.review = review;
-      next();
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({message: GET_REVIEW_ERROR})
-    });
+    res.locals.review = review;
+    next();
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({message: GET_REVIEW_ERROR})
+  }
 }
 
 function checkForReviewData(req, res, next) {

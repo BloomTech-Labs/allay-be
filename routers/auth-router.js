@@ -8,13 +8,14 @@ const {
 } = require('../middleware/index.js');
 const signToken = require('../config/token');
 
+
 /**************************************************************************/
 
 //               for endpoints beginnings with /api/auth                  //
 
-/*************************** BEGIN REGISTER *******************************/
 
-router.post('/register', checkForRegisterData, (req, res) => {
+/*************************** BEGIN REGISTER *******************************/
+router.post('/register', checkForRegisterData, async (req, res) => {
 	let {
 		email,
 		password,
@@ -68,41 +69,41 @@ router.post('/register', checkForRegisterData, (req, res) => {
 		profile_image,
 		portfolio
 	};
-	User.addUser(user)
-		.then(newUser => {
-			const token = signToken(newUser);
-			res.status(201).json({token, user: newUser});
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({ error: 'There was an error signing up.' });
-		});
+
+	try {
+		const newUser = await User.addUser(user);
+		const token = signToken(newUser);
+		res.status(201).json({token, user: newUser});
+	} catch (e) {
+		console.log(e);
+		res.status(500).json({error: 'There was an error signing up.'});
+	}
 });
 /*************************** END REGISTER *******************************/
 
+
 /*************************** BEGIN LOGIN *******************************/
-
-router.post('/login', checkForLoginData, (req, res) => {
+router.post('/login', checkForLoginData, async (req, res) => {
 	let { email, password } = res.locals.newUser;
-	// console.log(req.body, 'req.body ln 36');
 
-	User.findUsersBy({ email })
-		.first()
-		.then((user) => {
-			if (user && bcrypt.compareSync(password, user.password)) {
-				const token = signToken(user);
-				const { id, admin, blocked, first_name, last_name, email } = user;
-				res.status(200).json({ token, id, admin, blocked, first_name, last_name, email });
-			} else {
-				res.status(401).json({ message: 'Invalid Credentials' });
-			}
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({ error: 'There was an error signing in' });
-		});
+	try {
+		const user = await User.findUsersBy({email}).first();
+
+		if (user && bcrypt.compareSync(password, user.password)) {
+			const token = signToken(user);
+			const {id, admin, blocked, first_name, last_name, email} = user;
+			res.json({token, id, admin, blocked, first_name, last_name, email}); // put user object here
+		} else {
+			res.status(401).json({message: 'Invalid Credentials'});
+		}
+	} catch (e) {
+		console.log(e);
+		res.status(500).json({error: 'There was an error signing in'});
+	}
 });
 
+
 /*************************** END LOGIN *******************************/
+
 
 module.exports = router;
