@@ -9,6 +9,7 @@ const {
   UPDATE_USER_ERROR,
   DELETE_USER_ERROR,
   WRONG_USER_ERROR,
+  DUPLICATE_USER_ERROR,
   ADD_REVIEW_ERROR,
   UPDATE_REVIEW_ERROR,
   DELETE_REVIEW_ERROR,
@@ -106,6 +107,9 @@ router.put('/:userId', validateUserId, async (req, res) => {
     const updatedUser = await User.updateUser(user.id, updates);
     res.json(updatedUser);
   } catch (e) {
+    if (e.code === '23505')
+      return res.status(409).json({error: DUPLICATE_USER_ERROR});
+
     console.log(e);
     res.status(500).json({message: UPDATE_USER_ERROR});
   }

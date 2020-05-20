@@ -7,6 +7,7 @@ const {
   checkForLoginData,
 } = require('../middleware/index.js');
 const signToken = require('../config/token');
+const {DUPLICATE_USER_ERROR} = require('../config/errors');
 
 /**************************************************************************/
 
@@ -73,6 +74,9 @@ router.post('/register', checkForRegisterData, async (req, res) => {
     const token = signToken(newUser);
     res.status(201).json({token, user: newUser});
   } catch (e) {
+    if (e.code === '23505')
+      return res.status(409).json({error: DUPLICATE_USER_ERROR});
+
     console.log(e);
     res.status(500).json({error: 'There was an error signing up.'});
   }

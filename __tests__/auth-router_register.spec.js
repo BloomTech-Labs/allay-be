@@ -23,12 +23,12 @@ describe('Routers Users', () => {
       expect(newUser).not.toBeNull();
     });
 
-    it('Return 500 on duplicate', async () => {
+    it('Return 409 on duplicate', async () => {
       await request(url, {method, body: user});
 
       const {status, type} = await request(url, {method, body: user});
 
-      expect(status).toEqual(500);
+      expect(status).toEqual(409);
       expect(type).toEqual('application/json');
     });
   });

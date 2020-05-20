@@ -11,6 +11,7 @@ const USER_NO_CHANGES_ERROR = 'No changes to update.';
 const UPDATE_USER_ERROR = 'There was an error updating user.';
 const DELETE_USER_ERROR = 'There was an error deleting user.';
 const WRONG_USER_ERROR = 'Wrong user.';
+const DUPLICATE_USER_ERROR = 'User already exists.';
 
 const GET_ALL_REVIEW_ERROR = 'There was an error getting all reviews.';
 const GET_REVIEW_ERROR = 'There was an error getting review.';
@@ -40,6 +41,7 @@ module.exports = {
   UPDATE_USER_ERROR,
   DELETE_USER_ERROR,
   WRONG_USER_ERROR,
+  DUPLICATE_USER_ERROR,
 
   GET_ALL_REVIEW_ERROR,
   GET_REVIEW_ERROR,
