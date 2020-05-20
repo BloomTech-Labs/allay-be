@@ -127,5 +127,19 @@ describe('Routers Users', () => {
 
       expect(body).toEqual(newUser);
     });
+
+    it('Return 409 on duplicate', async () => {
+      const newUser = createUser({id: 2, email: 'fake@email.com'});
+      await db('users').insert(newUser);
+
+      const {status, type} = await request(`/api/users/${newUser.id}`, {
+        method,
+        token,
+        body: {email: user.email},
+      });
+
+      expect(status).toEqual(409);
+      expect(type).toEqual('application/json');
+    });
   });
 });
