@@ -194,7 +194,7 @@ router.put(
   async (req, res) => {
     try {
       const updatedReview = await Revs.updateReview(
-        res.locals.review.id,
+        res.locals.id,
         res.locals.newReview
       );
       res.json(updatedReview);
