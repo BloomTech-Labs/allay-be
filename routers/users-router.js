@@ -197,7 +197,7 @@ router.put(
         res.locals.review.id,
         res.locals.newReview
       );
-      res.json({updatedReview}); // Remove object wrapping
+      res.json(updatedReview);
     } catch (e) {
       console.log(e);
       res.status(500).json({message: UPDATE_REVIEW_ERROR});
