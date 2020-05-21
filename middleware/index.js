@@ -137,14 +137,6 @@ async function validateReviewId({params: {revId}}, res, next) {
 function checkForReviewData(req, res, next) {
   if (Object.keys(req.body).length === 0) {
     res.status(400).json({message: MISSING_BODY_INFO_ERROR});
-  } else if (
-    !req.body.job_title ||
-    !req.body.city ||
-    !req.body.state_id ||
-    !req.body.salary ||
-    !req.body.company_name
-  ) {
-    res.status(400).json({message: MISSING_REQUIRED_BODY_FIELD});
   } else {
     res.locals.newReview = req.body;
     next();
