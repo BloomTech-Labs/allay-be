@@ -122,6 +122,7 @@ function addReview(newReview) {
 }
 
 // UPDATE AN EXISTING REVIEW
+
 function updateReview(id, changes) {
   return db('reviews')
     .where({id})
