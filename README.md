@@ -2,7 +2,7 @@
 
 ### Maintainability Score: https://codeclimate.com/github/Lambda-School-Labs/allay-be/maintainability
 
-#### Backend delpoyed at [Heroku](https://labs21-allay-be.herokuapp.com/) <br>
+#### Backend deployed at [Heroku](https://lamba-allay-production.herokuapp.com/) <br>
 
 ## Getting Started
 
